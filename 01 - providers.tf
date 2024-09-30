@@ -30,3 +30,7 @@ provider "helm" {
     config_context = "docker-desktop"
   }
 }
+
+provider "vault" {
+  token   = local.vault_root_token
+}
