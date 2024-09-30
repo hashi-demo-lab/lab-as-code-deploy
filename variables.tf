@@ -14,3 +14,8 @@ variable "vault_helm_version" {
   description = "Vault's Helm Release Version"
   default     = "~> 0"
 }
+
+variable "github_organization" {
+  type        = string
+  description = "GitHub Organization"
+}
