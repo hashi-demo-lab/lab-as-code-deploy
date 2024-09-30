@@ -11,13 +11,13 @@ resource "kubernetes_secret_v1" "vault_license" {
   type = "kubernetes.io/opaque"
 }
 
-# Step 3: Create the private key for the Vault TLS certificate
+# Create the private key for the Vault TLS certificate
 resource "tls_private_key" "vault_tls_key" {
   algorithm = "RSA"
   rsa_bits  = 4096
 }
 
-# Step 4: Create the Vault certificate signed by the CA
+# Create the Vault certificate signed by the CA
 resource "tls_cert_request" "vault_cert_req" {
   private_key_pem = tls_private_key.vault_tls_key.private_key_pem
 
