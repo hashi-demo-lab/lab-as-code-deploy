@@ -32,5 +32,5 @@ provider "helm" {
 }
 
 provider "vault" {
-  token   = local.vault_root_token
+  token = local.vault_root_token
 }
