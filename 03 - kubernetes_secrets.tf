@@ -41,8 +41,8 @@ resource "tls_cert_request" "vault_cert_req" {
 
 resource "tls_locally_signed_cert" "vault_cert" {
   cert_request_pem   = tls_cert_request.vault_cert_req.cert_request_pem
-  ca_private_key_pem = file("./pre-reqs/ca_key.pem")
-  ca_cert_pem        = file("./pre-reqs/ca_cert.pem")
+  ca_private_key_pem = file("./01 - pre_reqs/ca_key.pem")
+  ca_cert_pem        = file("./01 - pre_reqs/ca_cert.pem")
 
   validity_period_hours = 8760 # 1 year
   early_renewal_hours   = 720  # Renew 1 month in advance
@@ -63,7 +63,7 @@ resource "kubernetes_secret_v1" "vault_tls" {
   data = {
     "tls.crt" = tls_locally_signed_cert.vault_cert.cert_pem
     "tls.key" = tls_private_key.vault_tls_key.private_key_pem
-    "ca.crt"  = file("./pre-reqs/ca_cert.pem")
+    "ca.crt"  = file("./01 - pre_reqs/ca_cert.pem")
   }
 
   type = "kubernetes.io/tls"
