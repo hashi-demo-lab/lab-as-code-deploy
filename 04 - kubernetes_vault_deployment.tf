@@ -51,7 +51,7 @@ resource "helm_release" "vault" {
   version    = var.vault_helm_version
 
   values = [
-    "${file("values.vault.yaml")}"
+    "${file("./02 - helm_charts/values.vault.yaml")}"
   ]
 
   set {
