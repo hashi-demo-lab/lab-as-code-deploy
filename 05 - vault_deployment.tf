@@ -1,3 +1,15 @@
+# Creating Vault Enterprise License Secret
+resource "kubernetes_secret_v1" "vault_license" {
+  metadata {
+    name      = "vaultlicense"
+    namespace = kubernetes_namespace.vault.id
+  }
+  data = {
+    license = var.vault_license
+  }
+  type = "kubernetes.io/opaque"
+}
+
 resource "kubernetes_role_v1" "vault_init_role" {
   metadata {
     name      = "vault-init-role"
@@ -30,19 +42,11 @@ resource "kubernetes_role_binding_v1" "vault_init_role_binding" {
   }
 }
 
-resource "helm_release" "ingress_nginx" {
-  name       = "ingress-nginx"
-  repository = "https://kubernetes.github.io/ingress-nginx"
-  chart      = "ingress-nginx"
-  namespace  = kubernetes_namespace.vault.id
-
-  set {
-    name  = "controller.extraArgs.enable-ssl-passthrough"
-    value = ""
-  }
-}
-
 resource "helm_release" "vault" {
+  depends_on = [
+    kubernetes_secret_v1.vault_license,
+    helm_release.ingress_nginx
+  ] # Add a dependency on the license secret & the Ingress controller
 
   name       = "vault"
   repository = "https://helm.releases.hashicorp.com"
@@ -51,7 +55,7 @@ resource "helm_release" "vault" {
   version    = var.vault_helm_version
 
   values = [
-    "${file("./02 - helm_charts/values.vault.yaml")}"
+    local.vault_helm
   ]
 
   set {
@@ -66,6 +70,7 @@ resource "helm_release" "vault" {
 }
 
 resource "kubernetes_job_v1" "vault_init" {
+  depends_on = [helm_release.vault] # Add a dependency on the Helm release
 
   metadata {
     name      = "vault-init-job"
@@ -159,4 +164,14 @@ resource "kubernetes_job_v1" "vault_init" {
       }
     }
   }
+}
+
+# Fetch the Vault root token and unseal key from the Kubernetes secret
+data "kubernetes_secret" "vault_init_credentials" {
+  metadata {
+    name      = "vault-init-credentials"
+    namespace = kubernetes_namespace.vault.id
+  }
+
+  depends_on = [kubernetes_job_v1.vault_init] # Add a dependency on the job
 }
