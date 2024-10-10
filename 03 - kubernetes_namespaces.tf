@@ -1,78 +1,28 @@
-# Creating Kubernetes Namespaces 
-resource "kubernetes_namespace" "vault" {
-  metadata {
-    annotations = {
-      name = "vault"
-    }
-    labels = {
-      team = "vault"
-    }
-
-    name = "vault"
+# Map of namespaces and their corresponding team labels
+locals {
+  namespaces = {
+    vault      = "vault"
+    ldap       = "ldap"
+    nginx      = "nginx"
+    prometheus = "prometheus"
+    grafana    = "grafana"
+    mysql      = "mysql"
   }
 }
 
-resource "kubernetes_namespace" "ldap" {
+# Creating Kubernetes Namespaces dynamically using for_each
+resource "kubernetes_namespace" "namespace" {
+  for_each = local.namespaces
+
   metadata {
+    name = each.key
+
     annotations = {
-      name = "ldap"
-    }
-    labels = {
-      team = "ldap"
+      name = each.key
     }
 
-    name = "ldap"
+    labels = {
+      team = each.value
+    }
   }
 }
-
-resource "kubernetes_namespace" "nginx" {
-  metadata {
-    annotations = {
-      name = "nginx"
-    }
-    labels = {
-      team = "nginx"
-    }
-
-    name = "nginx"
-  }
-}
-
-resource "kubernetes_namespace" "prometheus" {
-  metadata {
-    annotations = {
-      name = "prometheus"
-    }
-    labels = {
-      team = "prometheus"
-    }
-
-    name = "prometheus"
-  }
-}
-
-resource "kubernetes_namespace" "grafana" {
-  metadata {
-    annotations = {
-      name = "grafana"
-    }
-    labels = {
-      team = "grafana"
-    }
-
-    name = "grafana"
-  }
-}
-
-resource "kubernetes_namespace" "mysql" {
-  metadata {
-    annotations = {
-      name = "mysql"
-    }
-    labels = {
-      team = "mysql"
-    }
-
-    name = "mysql"
-  }
-} 
