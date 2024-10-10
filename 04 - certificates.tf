@@ -1,4 +1,15 @@
-# Vault certificate
+# Reusable values for certificates (validity, renewal, uses)
+locals {
+  validity_period_hours = 8760 # 1 year
+  early_renewal_hours   = 720  # 1 month
+  allowed_cert_uses = [
+    "key_encipherment",
+    "digital_signature",
+    "server_auth",
+  ]
+}
+
+# Vault Certificate and TLS Secret
 resource "tls_private_key" "vault_tls_key" {
   algorithm = "RSA"
   rsa_bits  = 4096
@@ -7,21 +18,11 @@ resource "tls_private_key" "vault_tls_key" {
 resource "tls_cert_request" "vault_cert_req" {
   private_key_pem = tls_private_key.vault_tls_key.private_key_pem
 
-  dns_names = [
-    "vault-active.vault.svc.cluster.local",
-    "vault.vault.svc.cluster.local",
-    "vault-0.vault.svc.cluster.local",
-    "vault-1.vault.svc.cluster.local",
-    "vault-2.vault.svc.cluster.local",
-    "vault-0.vault-internal.vault.svc.cluster.local",
-    "vault-1.vault-internal.vault.svc.cluster.local",
-    "vault-2.vault-internal.vault.svc.cluster.local",
-    "vault-dc1.hashibank.com"
-  ]
+  dns_names = var.vault_dns_names
 
   subject {
-    common_name  = "vault-dc1.hashibank.com"
-    organization = "HashiCorp"
+    common_name  = var.vault_common_name
+    organization = var.organization
   }
 }
 
@@ -30,20 +31,16 @@ resource "tls_locally_signed_cert" "vault_cert" {
   ca_private_key_pem = local.ca_private_key_pem
   ca_cert_pem        = local.ca_cert_pem
 
-  validity_period_hours = 8760 # 1 year
-  early_renewal_hours   = 720
+  validity_period_hours = local.validity_period_hours
+  early_renewal_hours   = local.early_renewal_hours
 
-  allowed_uses = [
-    "key_encipherment",
-    "digital_signature",
-    "server_auth",
-  ]
+  allowed_uses = local.allowed_cert_uses
 }
 
 resource "kubernetes_secret_v1" "vault_tls" {
   metadata {
-    name      = "vaultcertificate"
-    namespace = kubernetes_namespace.vault.id
+    name      = "vault-certificate" # Consistent and clear naming
+    namespace = kubernetes_namespace.namespace["vault"].id
   }
 
   data = {
@@ -55,7 +52,7 @@ resource "kubernetes_secret_v1" "vault_tls" {
   type = "kubernetes.io/tls"
 }
 
-# OpenLDAP Certificate
+# OpenLDAP Certificate and TLS Secret
 resource "tls_private_key" "ldap_tls_key" {
   algorithm = "RSA"
   rsa_bits  = 4096
@@ -64,17 +61,11 @@ resource "tls_private_key" "ldap_tls_key" {
 resource "tls_cert_request" "ldap_cert_req" {
   private_key_pem = tls_private_key.ldap_tls_key.private_key_pem
 
-  dns_names = [
-    "ldap.hashibank.com",
-    "phpldapadmin.hashibank.com",
-    "openldap.ldap.svc.cluster.local",
-    "openldap-0.ldap.svc.cluster.local",
-    "openldap-phpldapadmin.ldap.svc.cluster.local"
-  ]
+  dns_names = var.ldap_dns_names
 
   subject {
-    common_name  = "ldap.hashibank.com"
-    organization = "HashiCorp"
+    common_name  = var.ldap_common_name
+    organization = var.organization
   }
 }
 
@@ -83,20 +74,16 @@ resource "tls_locally_signed_cert" "ldap_cert" {
   ca_private_key_pem = local.ca_private_key_pem
   ca_cert_pem        = local.ca_cert_pem
 
-  validity_period_hours = 8760
-  early_renewal_hours   = 720
+  validity_period_hours = local.validity_period_hours
+  early_renewal_hours   = local.early_renewal_hours
 
-  allowed_uses = [
-    "key_encipherment",
-    "digital_signature",
-    "server_auth",
-  ]
+  allowed_uses = local.allowed_cert_uses
 }
 
 resource "kubernetes_secret_v1" "ldap_tls" {
   metadata {
-    name      = "ldap-secrets"
-    namespace = kubernetes_namespace.ldap.id
+    name      = "ldap-certificate" # Consistent and clear naming
+    namespace = kubernetes_namespace.namespace["ldap"].id
   }
 
   data = {
