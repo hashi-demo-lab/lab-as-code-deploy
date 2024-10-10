@@ -1,4 +1,12 @@
 terraform {
+  cloud {
+    organization = "lab-as-code"
+    workspaces {
+      project = "deployments"
+      name    = "lab-as-code-deploy"
+    }
+  }
+
   required_providers {
     vault = {
       source  = "hashicorp/vault"
@@ -14,20 +22,20 @@ terraform {
     }
     tls = {
       source  = "hashicorp/tls"
-      version = "4.0.6"
+      version = "~> 4"
     }
   }
 }
 
 provider "kubernetes" {
-  config_path    = "~/.kube/config"
-  config_context = "docker-desktop"
+  config_path    = var.kube_config_path
+  config_context = var.kube_config_context
 }
 
 provider "helm" {
   kubernetes {
-    config_path    = "~/.kube/config"
-    config_context = "docker-desktop"
+    config_path    = var.kube_config_path
+    config_context = var.kube_config_context
   }
 }
 
