@@ -7,4 +7,5 @@ output "ca_cert_pem" {
 output "ca_key_pem" {
   description = "The generated CA private key in PEM format"
   value       = tls_private_key.ca_tls_key.private_key_pem
+  sensitive = true
 }
