@@ -19,10 +19,4 @@ resource "helm_release" "vault" {
     name  = "server.ingress.tls[0].hosts[0]"
     value = "vault-dc1.hashibank.com"
   }
-
-  lifecycle {
-    ignore_changes = [
-      metadata # Ignores all changes within the metadata block
-    ]
-  }
 }
