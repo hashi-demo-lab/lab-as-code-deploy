@@ -1,5 +1,7 @@
 # Helm release for Vault
 resource "helm_release" "vault" {
+  depends_on = [ kubernetes_secret_v1.vault_license, kubernetes_secret_v1.vault_tls ]
+  
   name       = "vault"
   repository = "https://helm.releases.hashicorp.com"
   chart      = "vault"
