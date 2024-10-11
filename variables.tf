@@ -11,33 +11,6 @@ variable "kube_config_context" {
 }
 
 
-variable "vault_version" {
-  type        = string
-  description = "Vault Version"
-  default     = "latest"
-}
-
-variable "vault_license" {
-  type        = string
-  description = "Vault License"
-}
-
-variable "vault_helm_version" {
-  type        = string
-  description = "Vault's Helm Release Version"
-  default     = "~> 0"
-}
-
-variable "vault_dns_names" {
-  type        = list(string)
-  description = "DNS names for Vault certificate"
-}
-
-variable "vault_common_name" {
-  type        = string
-  description = "Common name for Vault certificate"
-}
-
 variable "ldap_dns_names" {
   type        = list(string)
   description = "DNS names for LDAP certificate"
