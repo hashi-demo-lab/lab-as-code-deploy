@@ -10,40 +10,6 @@ resource "kubernetes_secret_v1" "vault_license" {
   type = "Opaque" # Corrected to Opaque, as kubernetes.io/opaque is not valid
 }
 
-# Role for Vault initialization to manage secrets
-resource "kubernetes_role_v1" "vault_init_role" {
-  metadata {
-    name      = "vault-init-role"
-    namespace = "vault"
-  }
-
-  rule {
-    api_groups = [""]
-    resources  = ["secrets"]
-    verbs      = ["create", "get", "update"]
-  }
-}
-
-# Binding role to default service account for Vault init
-resource "kubernetes_role_binding_v1" "vault_init_role_binding" {
-  metadata {
-    name      = "vault-init-role-binding"
-    namespace = "vault"
-  }
-
-  role_ref {
-    api_group = "rbac.authorization.k8s.io"
-    kind      = "Role"
-    name      = kubernetes_role_v1.vault_init_role.metadata[0].name
-  }
-
-  subject {
-    kind      = "ServiceAccount"
-    name      = "default"
-    namespace = "vault"
-  }
-}
-
 # ConfigMap to store the Vault init script
 resource "kubernetes_config_map_v1" "vault_init_script" {
   metadata {
