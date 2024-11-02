@@ -1,7 +1,7 @@
 variable "kube_config_path" {
   type        = string
   description = "Path to the kubeconfig file"
-  default     = "/kubeconfig/config"  # Path inside the container
+  default     = "~/.kube/config" # Default path on Mac
 }
 
 variable "kube_config_context" {
@@ -10,15 +10,19 @@ variable "kube_config_context" {
   default     = "docker-desktop"
 }
 
-
-variable "ldap_dns_names" {
-  type        = list(string)
-  description = "DNS names for LDAP certificate"
+variable "vault_license" {
+  type        = string
+  description = "Vault License"
 }
 
-variable "ldap_common_name" {
+variable "vault_dns_names" {
+  type        = list(string)
+  description = "DNS names for Vault certificate"
+}
+
+variable "vault_common_name" {
   type        = string
-  description = "Common name for LDAP certificate"
+  description = "Common name for Vault certificate"
 }
 
 variable "organization" {
@@ -26,16 +30,27 @@ variable "organization" {
   description = "Organization name for both Vault and LDAP certificates"
 }
 
+# variable "ldap_dns_names" {
+#   type        = list(string)
+#   description = "DNS names for LDAP certificate"
+# }
+
+# variable "ldap_common_name" {
+#   type        = string
+#   description = "Common name for LDAP certificate"
+# }
+
+
 variable "prometheus_helm_version" {
   type        = string
   description = "Prometheus Helm Release Version"
   default     = "~> 24"
 }
 
-variable "prometheus_targets" {
-  type    = list(string)
-  default = ["vault-active.vault.svc.cluster.local:8200"]
-}
+# variable "prometheus_targets" {
+#   type    = list(string)
+#   default = ["vault-active.vault.svc.cluster.local:8200"]
+# }
 
 variable "grafana_helm_version" {
   type        = string
@@ -43,17 +58,17 @@ variable "grafana_helm_version" {
   default     = "~> 7"
 }
 
-variable "github_organization" {
-  type        = string
-  description = "GitHub Organization"
-}
+# variable "github_organization" {
+#   type        = string
+#   description = "GitHub Organization"
+# }
 
-variable "oidc_client_id" {
-  type        = string
-  description = "value of the client_id"
-}
+# variable "oidc_client_id" {
+#   type        = string
+#   description = "value of the client_id"
+# }
 
-variable "oidc_client_secret" {
-  type        = string
-  description = "value of the client_secret"
-}
+# variable "oidc_client_secret" {
+#   type        = string
+#   description = "value of the client_secret"
+# }
