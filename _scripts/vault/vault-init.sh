@@ -25,14 +25,13 @@ for i in 1 2; do
   vault operator unseal $unseal_key
 done
 
-echo "Vault initialization and unsealing complete!"
-echo VAULT_TOKEN=$root_token
-
 # Store the root token and unseal key in Kubernetes secret
 kubectl create secret generic vault-init-credentials \
   --from-literal=root-token=$root_token \
   --from-literal=unseal-key=$unseal_key \
   -n $K8S_NAMESPACE
+
+echo "Vault initialization and unsealing complete!"
 
 # After Vault initialization, proceed with setting up the policies and authentication
 # echo "Setting up Vault JWT auth for Terraform Cloud..."
