@@ -28,7 +28,7 @@ objectClass: groupOfNames
 objectClass: top
 description: group for testers
 cn: testers
-member: cn=bob,ou=users,dc=hashibank,dc=com
+member: cn=tony,ou=users,dc=hashibank,dc=com
 
 dn: cn=administrators,ou=groups,dc=hashibank,dc=com
 objectClass: groupOfNames
@@ -54,10 +54,10 @@ sn: e
 memberOf: cn=developers,ou=groups,dc=hashibank,dc=com
 userPassword: password
 
-dn: cn=bob,ou=users,dc=hashibank,dc=com
+dn: cn=tony,ou=users,dc=hashibank,dc=com
 objectClass: person
 objectClass: top
-cn: bob
+cn: tony
 sn: villa
 memberOf: cn=testers,ou=groups,dc=hashibank,dc=com
 userPassword: password
