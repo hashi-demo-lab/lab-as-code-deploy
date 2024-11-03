@@ -30,7 +30,7 @@ resource "kubernetes_role_v1" "vault_init_role" {
   rule {
     api_groups = [""]
     resources  = ["secrets"]
-    verbs      = ["create", "get", "update", "delete"]
+    verbs      = ["create", "get", "update", "delete", "patch"]
   }
 }
 
