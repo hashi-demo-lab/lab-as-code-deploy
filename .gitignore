@@ -40,3 +40,5 @@ terraform.rc
 #ignore pem files
 *.pem
 *.b64
+*.key
+*.crt
