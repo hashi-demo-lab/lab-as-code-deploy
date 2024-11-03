@@ -22,6 +22,10 @@ resource "tls_self_signed_cert" "ca_cert" {
   private_key_pem = tls_private_key.tls_key.private_key_pem
   validity_period_hours = var.validity_period_hours
   early_renewal_hours   = var.early_renewal_hours
+  is_ca_certificate   = true
+  set_subject_key_id  = true
+  set_authority_key_id = true
+  
   allowed_uses = ["cert_signing"]
 
   subject {
