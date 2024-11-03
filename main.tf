@@ -13,7 +13,6 @@ module "ca_cert" {
   save_to_file = true
 }
 
-
 module "ingress_nginx" {
   source = "./modules/ingress_nginx"
 
@@ -55,7 +54,6 @@ module "monitoring" {
 
 }
 
-# Create the LDAP certificate
 module "ldap_cert" {
   source = "./modules/cert_creation"
 
