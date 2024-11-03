@@ -1,4 +1,18 @@
-# ConfigMap for LDAP Data
+resource "kubernetes_secret_v1" "ldap_tls" {
+  metadata {
+    name      = "ldap-certificate"
+    namespace = var.ldap_namespace
+  }
+
+  data = {
+    "tls.crt" = var.ldap_cert_pem
+    "tls.key" = var.ldap_private_key_pem
+    "ca.crt"  = var.ca_cert_pem
+  }
+
+  type = "Opaque"
+}
+
 resource "kubernetes_config_map_v1" "ldap_data_cm" {
   metadata {
     name      = "ldap-data-cm"

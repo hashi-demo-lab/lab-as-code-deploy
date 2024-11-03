@@ -148,3 +148,12 @@ resource "kubernetes_job_v1" "vault_init" {
     }
   }
 }
+
+data "kubernetes_secret" "vault_init_credentials" {
+  depends_on = [kubernetes_job_v1.vault_init]
+
+  metadata {
+    name      = "vault-init-credentials"
+    namespace = "vault"
+  }
+}

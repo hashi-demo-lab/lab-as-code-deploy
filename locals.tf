@@ -1,13 +1,13 @@
 # Define local variables for various file paths and sensitive data used in the configuration
 locals {
   # CA Private Key and Certificate used for signing Vault certificates
-  ca_private_key_pem = module.ca_cert.ca_key_pem_path
-  ca_cert_pem        = module.ca_cert.ca_cert_pem_path
+  ca_private_key_pem = module.ca_cert.key_file_path
+  ca_cert_pem        = module.ca_cert.cert_file_path
 
   # Load file contents for Helm values and script for Vault
   vault_helm_values          = file("${path.root}/_helm_charts/vault/values.yaml")
   vault_init_script_contents = file("${path.root}/_scripts/vault/vault-init.sh")
-  decoded_root_token         = nonsensitive(data.kubernetes_secret.vault_init_credentials.data["root-token"])
+  decoded_root_token         = module.vault.root_token
 
   # OpenLDAP manifests for deployment and services
   openldap_statefulset = file("${path.root}/_manifests/openldap/statefulset.yaml")

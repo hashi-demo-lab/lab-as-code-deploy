@@ -3,6 +3,21 @@ variable "ldap_namespace" {
   type        = string
 }
 
+variable "ldap_cert_pem" {
+  description = "PEM-encoded LDAP certificate"
+  type        = string
+}
+
+variable "ldap_private_key_pem" {
+  description = "PEM-encoded LDAP private key"
+  type        = string
+}
+
+variable "ca_cert_pem" {
+  description = "PEM-encoded CA certificate"
+  type        = string
+}
+
 variable "openldap_statefulset" {
   description = "Content of the OpenLDAP StatefulSet YAML manifest"
   type        = string

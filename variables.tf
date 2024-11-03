@@ -30,17 +30,6 @@ variable "organization" {
   description = "Organization name for both Vault and LDAP certificates"
 }
 
-# variable "ldap_dns_names" {
-#   type        = list(string)
-#   description = "DNS names for LDAP certificate"
-# }
-
-# variable "ldap_common_name" {
-#   type        = string
-#   description = "Common name for LDAP certificate"
-# }
-
-
 variable "prometheus_helm_version" {
   type        = string
   description = "Prometheus Helm Release Version"
@@ -56,6 +45,16 @@ variable "grafana_helm_version" {
   type        = string
   description = "Grafana Helm Release Version"
   default     = "~> 7"
+}
+
+variable "ldap_dns_names" {
+  type        = list(string)
+  description = "DNS names for LDAP certificate"
+}
+
+variable "ldap_common_name" {
+  type        = string
+  description = "Common name for LDAP certificate"
 }
 
 # variable "github_organization" {
