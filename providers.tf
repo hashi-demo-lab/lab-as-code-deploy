@@ -12,7 +12,3 @@ provider "helm" {
     config_context = var.kube_config_context
   }
 }
-
-provider "vault" {
-  token = local.vault_root_token
-}
