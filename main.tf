@@ -10,7 +10,7 @@ module "ca_cert" {
   validity_period_hours = 87600
   cert_file_name        = "vault-ca.crt"
   key_file_name         = "vault-ca.key"
-  save_to_file = true
+  save_to_file          = true
 }
 
 module "ingress_nginx" {

@@ -18,16 +18,29 @@ variable "vault_license" {
 variable "vault_dns_names" {
   type        = list(string)
   description = "DNS names for Vault certificate"
+  default = [
+    "vault-active.vault.svc.cluster.local",
+    "vault.vault.svc.cluster.local",
+    "vault-0.vault.svc.cluster.local",
+    "vault-1.vault.svc.cluster.local",
+    "vault-2.vault.svc.cluster.local",
+    "vault-0.vault-internal.vault.svc.cluster.local",
+    "vault-1.vault-internal.vault.svc.cluster.local",
+    "vault-2.vault-internal.vault.svc.cluster.local",
+    "vault-dc1.hashibank.com"
+  ]
 }
 
 variable "vault_common_name" {
   type        = string
   description = "Common name for Vault certificate"
+  default     = "vault-dc1.hashibank.com"
 }
 
 variable "organization" {
   type        = string
   description = "Organization name for both Vault and LDAP certificates"
+  default     = "HashiBank"
 }
 
 variable "prometheus_helm_version" {
@@ -50,11 +63,19 @@ variable "grafana_helm_version" {
 variable "ldap_dns_names" {
   type        = list(string)
   description = "DNS names for LDAP certificate"
+  default = [
+    "ldap.hashibank.com",
+    "phpldapadmin.hashibank.com",
+    "openldap.ldap.svc.cluster.local",
+    "openldap-0.ldap.svc.cluster.local",
+    "openldap-phpldapadmin.ldap.svc.cluster.local"
+  ]
 }
 
 variable "ldap_common_name" {
   type        = string
   description = "Common name for LDAP certificate"
+  default     = "ldap.hashibank.com"
 }
 
 # variable "github_organization" {
