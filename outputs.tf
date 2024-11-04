@@ -25,5 +25,6 @@ output "command_trust_cert" {
 
 output "command_update_etc_hosts" {
     #update /etc/hosts
-    value = "sudo echo \"${var.vault_common_name} 127.0.0.1\" >> /etc/hosts \nsudo echo \"${var.ldap_common_name} 127.0.0.1\" >> /etc/hosts"
+    value = "echo -e 127.0.0.1 ${var.vault_common_name} | sudo tee -a /etc/hosts > /dev/null\necho -e 127.0.0.1 ${var.ldap_common_name}| sudo tee -a /etc/hosts > /dev/null"
 }
+
