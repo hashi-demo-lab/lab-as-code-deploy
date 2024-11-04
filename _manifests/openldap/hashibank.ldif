@@ -37,6 +37,15 @@ description: group for administrators
 cn: administrators
 member: cn=simon,ou=users,dc=hashibank,dc=com
 
+dn: cn=sea,ou=groups,dc=hashibank,dc=com
+objectClass: groupOfNames
+objectClass: top
+description: group for SEA team members
+cn: sea
+member: cn=aaron,ou=users,dc=hashibank,dc=com
+member: cn=simon,ou=users,dc=hashibank,dc=com
+member: cn=tony,ou=users,dc=hashibank,dc=com
+
 dn: cn=service-accounts,ou=groups,dc=hashibank,dc=com
 objectClass: groupOfNames
 objectClass: top
@@ -58,7 +67,7 @@ dn: cn=tony,ou=users,dc=hashibank,dc=com
 objectClass: person
 objectClass: top
 cn: tony
-sn: villa
+sn: p
 memberOf: cn=testers,ou=groups,dc=hashibank,dc=com
 userPassword: password
 
