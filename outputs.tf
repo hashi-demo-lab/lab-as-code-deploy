@@ -10,9 +10,14 @@ output "https_ldap_common_name" {
     value = var.ldap_common_name
 }
 
-# output "cert_full_path" {
-#     value = "${path.root}/${module.ca_cert.cert_file_path}"
-# }
+output "grafana_address" {
+    value = "http://localhost:3000" 
+}
+
+output "prometheus_address" {
+    value = "http://localhost:9090" 
+}
+
 
 output "command_trust_cert" {
     value = "sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain ${path.root}/${module.ca_cert.cert_file_path}"
