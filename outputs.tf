@@ -28,3 +28,7 @@ output "command_update_etc_hosts" {
     value = "echo -e 127.0.0.1 ${var.vault_common_name} | sudo tee -a /etc/hosts > /dev/null\necho -e 127.0.0.1 ${var.ldap_common_name}| sudo tee -a /etc/hosts > /dev/null"
 }
 
+output "command_vault_root_token" {
+    #decode vault root token
+    value = "kubectl config use-context docker-desktop; kubectl get secret vault-init-credentials -n vault -o jsonpath={.data.root-token} | base64 --decode"
+}
