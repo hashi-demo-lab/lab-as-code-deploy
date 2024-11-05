@@ -3,10 +3,7 @@ neo4j:
   resources:
     cpu: "1"
     memory: "2Gi"
-
-
   password: "Hashi123!"
-
   # Uncomment to use enterprise edition
   #edition: "enterprise"
   #acceptLicenseAgreement: "yes"
