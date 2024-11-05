@@ -14,5 +14,7 @@ volumes:
     defaultStorageClass:
       requests:
         storage: 10Gi
-
+    config:
+      dbms.default_database: “neo4j”
+      dbms.config.strict_validation: “true”
 # helm install neo4j-standalone neo4j/neo4j --namespace neo4j -f values.neo4j.yaml
