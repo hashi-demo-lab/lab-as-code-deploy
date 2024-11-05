@@ -4,8 +4,8 @@ neo4j:
     cpu: "0.5"
     memory: "2Gi"
 
-  # Uncomment to set the initial password
-  #password: "my-initial-password"
+
+  password: "Hashi123!"
 
   # Uncomment to use enterprise edition
   #edition: "enterprise"

@@ -13,6 +13,9 @@ output "https_ldap_common_name" {
 output "grafana_address" {
   value = "http://localhost:3000"
 }
+output "neo4j_address" {
+  value = "http://localhost:7474" 
+}
 
 output "prometheus_address" {
   value = "http://localhost:9090"
