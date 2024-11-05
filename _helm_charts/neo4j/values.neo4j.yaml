@@ -1,7 +1,7 @@
 neo4j:
   name: neo4j-standalone
   resources:
-    cpu: "0.5"
+    cpu: "1"
     memory: "2Gi"
 
 
