@@ -51,8 +51,17 @@ module "monitoring" {
   prometheus_scrape_config = local.prometheus_scrape_config # Loaded from a file
   grafana_configmap        = local.grafana_configmap        # Loaded from a file
   vault_root_token         = local.decoded_root_token
-
 }
+
+module "neo4j" {
+  source = "./modules/neo4j"
+  neo4j_namespace = "neo4j"
+  helm_release_name = "neo4j"
+  helm_repository = "https://helm.neo4j.com/neo4j"
+  helm_chart_name = "neo4j"
+  helm_values = local.neo4j_helm_values
+}
+
 
 module "ldap_cert" {
   source = "./modules/cert_creation"

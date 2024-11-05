@@ -22,4 +22,7 @@ locals {
   # Grafana Helm chart and ConfigMap for dashboards
   grafana_configmap   = file("./_helm_charts/grafana/configmap.yaml")      # Grafana ConfigMap for dashboards and configs
   grafana_helm_values = file("./_helm_charts/grafana/values.grafana.yaml") # Helm values for Grafana deployment
+
+  neo4j_helm_values = file("./_helm_charts/neo4j/values.neo4j.yaml") # Helm values for Neo4j deployment
+
 }
