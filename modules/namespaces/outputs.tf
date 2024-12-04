@@ -29,3 +29,13 @@ output "mysql_namespace" {
   description = "The namespace for MySQL"
   value       = kubernetes_namespace.namespace["mysql"].metadata[0].name
 }
+
+output "neo4j_namespace" {
+  description = "The namespace for Neo4j"
+  value       = kubernetes_namespace.namespace["neo4j"].metadata[0].name
+}
+
+output "gitlab_namespace" {
+  description = "The namespace for GitLab"
+  value       = kubernetes_namespace.namespace["gitlab"].metadata[0].name
+}

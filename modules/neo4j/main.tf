@@ -1,9 +1,3 @@
-resource "kubernetes_namespace" "neo4j" {
-  metadata {
-    name = var.neo4j_namespace
-  }
-}
-
 resource "helm_release" "neo4j" {
   name       = var.helm_release_name
   repository = var.helm_repository

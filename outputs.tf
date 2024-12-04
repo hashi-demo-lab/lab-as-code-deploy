@@ -14,7 +14,7 @@ output "grafana_address" {
   value = "http://localhost:3000"
 }
 output "neo4j_address" {
-  value = "http://localhost:7474" 
+  value = "http://localhost:7474"
 }
 
 output "prometheus_address" {

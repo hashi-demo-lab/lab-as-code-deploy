@@ -53,14 +53,15 @@ module "monitoring" {
   vault_root_token         = local.decoded_root_token
 }
 
-module "neo4j" {
-  source = "./modules/neo4j"
-  neo4j_namespace = "neo4j"
-  helm_release_name = "neo4j"
-  helm_repository = "https://helm.neo4j.com/neo4j"
-  helm_chart_name = "neo4j"
-  helm_values = local.neo4j_helm_values
-}
+# module "neo4j" {
+#   source = "./modules/neo4j"
+
+#   neo4j_namespace   = module.namespaces.neo4j_namespace
+#   helm_release_name = "neo4j"
+#   helm_repository   = "https://helm.neo4j.com/neo4j"
+#   helm_chart_name   = "neo4j"
+#   helm_values       = local.neo4j_helm_values
+# }
 
 
 module "ldap_cert" {
@@ -95,4 +96,15 @@ module "ldap" {
   phpldapadmin_service = local.phpldapadmin_service
   openldap_ingress     = local.openldap_ingress
   ldap_ldif_data       = local.ldap_ldif_data
+}
+
+module "gitlab_runner" {
+  source = "./modules/gitlab_runner"
+
+  namespace                 = module.namespaces.gitlab_namespace
+  release_name              = "gitlab-runner"
+  chart_version             = "0.70.3" # Specify the GitLab Runner chart version you need
+
+  runner_registration_token = var.gitlab_runner_token
+  gitlab_runner_helm_values = local.gitlab_runner_helm_values
 }

@@ -78,6 +78,12 @@ variable "ldap_common_name" {
   default     = "ldap.hashibank.com"
 }
 
+variable "gitlab_runner_token" {
+  description = "GitLab runner registration token"
+  type        = string
+  sensitive   = true # To keep the token secure
+}
+
 # variable "github_organization" {
 #   type        = string
 #   description = "GitHub Organization"
