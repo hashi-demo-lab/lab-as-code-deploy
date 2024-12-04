@@ -7,6 +7,8 @@ locals {
     ldap       = "ldap"
     grafana    = "grafana"
     mysql      = "mysql"
+    neo4j      = "neo4j"
+    gitlab     = "gitlab"
   }
 }
 
