@@ -4,6 +4,7 @@ module "namespaces" {
 
 module "ca_cert" {
   source                = "./modules/cert_creation"
+
   common_name           = "vault-ca"
   organization          = "HashiBank"
   is_ca_certificate     = true
@@ -19,13 +20,33 @@ module "ingress_nginx" {
   ingress_namespace = module.namespaces.nginx_namespace
 }
 
+module "vault_cert" {
+  source = "./modules/cert_creation"
+
+  ca_private_key_pem = module.ca_cert.private_key_pem
+  ca_cert_pem        = module.ca_cert.cert_pem
+
+  common_name  = var.vault_common_name
+  dns_names    = var.vault_dns_names
+  organization = var.organization
+
+  is_ca_certificate     = false
+  validity_period_hours = 8760
+  cert_file_name        = "vault.crt"
+  key_file_name         = "vault.key"
+  save_to_file          = true
+}
+
 module "vault" {
   source     = "./modules/vault"
   depends_on = [module.ingress_nginx]
 
   vault_namespace = module.namespaces.vault_namespace
-  ca_cert_pem     = module.ca_cert.cert_pem
-  ca_key_pem      = module.ca_cert.private_key_pem
+
+  # Pass certificate and key data from the vault_cert module
+  vault_cert_pem        = module.vault_cert.cert_pem
+  vault_private_key_pem = module.vault_cert.private_key_pem
+  ca_cert_pem          = module.ca_cert.cert_pem
 
   organization      = var.organization
   vault_license     = var.vault_license
@@ -71,8 +92,8 @@ module "ldap_cert" {
   ca_cert_pem        = module.ca_cert.cert_pem
 
   common_name  = var.ldap_common_name
-  organization = var.organization
   dns_names    = var.ldap_dns_names
+  organization = var.organization
 
   is_ca_certificate     = false
   validity_period_hours = 8760

@@ -5,10 +5,10 @@ resource "helm_release" "ingress_nginx" {
   namespace  = var.ingress_namespace  # Set dynamically from input variable
 
   # Configuration for the NGINX controller
-  set {
-    name  = "controller.watchNamespace"
-    value = var.controller_watch_namespace
-  }
+  # set {
+  #   name  = "controller.watchNamespace"
+  #   value = var.controller_watch_namespace
+  # }
 
   set {
     name  = "controller.extraArgs.enable-ssl-passthrough"

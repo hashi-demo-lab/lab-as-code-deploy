@@ -9,6 +9,21 @@ resource "kubernetes_secret_v1" "vault_license" {
   type = "Opaque"
 }
 
+resource "kubernetes_secret_v1" "vault_tls" {
+  metadata {
+    name      = "vault-certificate"
+    namespace = var.vault_namespace
+  }
+
+  data = {
+    "tls.crt" = var.vault_cert_pem
+    "tls.key" = var.vault_private_key_pem
+    "ca.crt"  = var.ca_cert_pem
+  }
+
+  type = "Opaque"
+}
+
 resource "kubernetes_config_map_v1" "vault_init_script" {
   metadata {
     name      = "vault-init-script"

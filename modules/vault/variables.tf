@@ -1,10 +1,15 @@
-variable "ca_cert_pem" {
-  description = "The CA certificate PEM"
+variable "vault_cert_pem" {
+  description = "PEM-encoded LDAP certificate"
   type        = string
 }
 
-variable "ca_key_pem" {
-  description = "The CA private key PEM"
+variable "vault_private_key_pem" {
+  description = "PEM-encoded LDAP private key"
+  type        = string
+}
+
+variable "ca_cert_pem" {
+  description = "The CA certificate PEM"
   type        = string
 }
 
