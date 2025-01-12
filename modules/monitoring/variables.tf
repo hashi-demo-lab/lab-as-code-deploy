@@ -30,6 +30,11 @@ variable "grafana_configmap" {
   type        = string
 }
 
+variable "grafana_dashboards" {
+  description = "Content of Grafana ConfigMap for dashboards"
+  type        = string
+}
+
 variable "ca_cert_pem" {
   description = "CA certificate PEM for Prometheus secret"
   type        = string
@@ -49,3 +54,4 @@ variable "grafana_helm_version" {
   description = "Grafana Helm chart version"
   type        = string
 }
+
