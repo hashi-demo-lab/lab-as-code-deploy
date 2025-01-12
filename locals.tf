@@ -20,8 +20,9 @@ locals {
   prometheus_helm_values   = file("./_helm_charts/prometheus/values.prometheus.yaml") # Helm values for Prometheus deployment
 
   # Grafana Helm chart and ConfigMap for dashboards
-  grafana_configmap   = file("./_helm_charts/grafana/configmap.yaml")      # Grafana ConfigMap for dashboards and configs
-  grafana_helm_values = file("./_helm_charts/grafana/values.grafana.yaml") # Helm values for Grafana deployment
+  grafana_configmap       = file("./_helm_charts/grafana/configmap.yaml")               # Grafana ConfigMap for dashboards and configs
+  grafana_helm_values     = file("./_helm_charts/grafana/values.grafana.yaml")          # Helm values for Grafana deployment
+  grafana_vault_dashboard = file("./_helm_charts/grafana/vault_dashboard.grafana.json") # Grafana Vault dashboard JSON
 
   neo4j_helm_values = file("./_helm_charts/neo4j/values.neo4j.yaml") # Helm values for Neo4j deployment
 
