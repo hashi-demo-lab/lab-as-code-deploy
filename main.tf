@@ -3,7 +3,7 @@ module "namespaces" {
 }
 
 module "ca_cert" {
-  source                = "./modules/cert_creation"
+  source = "./modules/cert_creation"
 
   common_name           = "vault-ca"
   organization          = "HashiBank"
@@ -46,7 +46,7 @@ module "vault" {
   # Pass certificate and key data from the vault_cert module
   vault_cert_pem        = module.vault_cert.cert_pem
   vault_private_key_pem = module.vault_cert.private_key_pem
-  ca_cert_pem          = module.ca_cert.cert_pem
+  ca_cert_pem           = module.ca_cert.cert_pem
 
   organization      = var.organization
   vault_license     = var.vault_license
@@ -70,7 +70,8 @@ module "monitoring" {
   prometheus_helm_values   = local.prometheus_helm_values   # Loaded from a file
   grafana_helm_values      = local.grafana_helm_values      # Loaded from a file
   prometheus_scrape_config = local.prometheus_scrape_config # Loaded from a file
-  grafana_configmap        = local.grafana_configmap        # Loaded from a file
+  grafana_configmap        = local.grafana_configmap
+  grafana_dashboards       = local.grafana_vault_dashboard # Loaded from a file
   vault_root_token         = local.decoded_root_token
 }
 
@@ -122,9 +123,9 @@ module "ldap" {
 module "gitlab_runner" {
   source = "./modules/gitlab_runner"
 
-  namespace                 = module.namespaces.gitlab_namespace
-  release_name              = "gitlab-runner"
-  chart_version             = "0.70.3" # Specify the GitLab Runner chart version you need
+  namespace     = module.namespaces.gitlab_namespace
+  release_name  = "gitlab-runner"
+  chart_version = "0.70.3" # Specify the GitLab Runner chart version you need
 
   runner_registration_token = var.gitlab_runner_token
   gitlab_runner_helm_values = local.gitlab_runner_helm_values
