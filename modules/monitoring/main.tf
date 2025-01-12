@@ -71,6 +71,21 @@ resource "kubernetes_config_map_v1" "grafana_config" {
   }
 }
 
+# ConfigMap for Grafana dashboards
+resource "kubernetes_config_map_v1" "grafana_dashboards" {
+  metadata {
+    name      = "grafana-dashboards"
+    namespace = var.grafana_namespace
+    labels = {
+      grafana_dashboard = "1"
+    }
+  }
+
+  data = {
+    "vault_dashboard.json" = var.grafana_dashboards
+  }
+}
+
 # Secret for Grafana Vault token
 resource "kubernetes_secret_v1" "grafana_token_secret" {
   metadata {
@@ -89,6 +104,7 @@ resource "kubernetes_secret_v1" "grafana_token_secret" {
 resource "helm_release" "grafana" {
   depends_on = [
     kubernetes_config_map_v1.grafana_config,
+    kubernetes_config_map_v1.grafana_dashboards,
     kubernetes_secret_v1.grafana_token_secret,
   ]
 
@@ -101,4 +117,9 @@ resource "helm_release" "grafana" {
   values = [
     var.grafana_helm_values
   ]
+
+  set {
+    name  = "dashboardsConfigMaps.default"
+    value = "grafana-dashboards"
+  }
 }
