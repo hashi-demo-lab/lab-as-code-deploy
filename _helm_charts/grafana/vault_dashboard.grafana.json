@@ -503,15 +503,15 @@
               },
               {
                 "color": "#EAB839",
-                "value": 70
+                "value": 500
               },
               {
                 "color": "#EF843C",
-                "value": 100
+                "value": 1000
               },
               {
                 "color": "#E24D42",
-                "value": 150
+                "value": 2000
               }
             ]
           }
