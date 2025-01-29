@@ -19,15 +19,18 @@ variable "vault_dns_names" {
   type        = list(string)
   description = "DNS names for Vault certificate"
   default = [
-    "vault-active.vault.svc.cluster.local",
     "vault.vault.svc.cluster.local",
+    "vault-active.vault.svc.cluster.local",
+    "vault-standby.vault.svc.cluster.local",
     "vault-0.vault.svc.cluster.local",
     "vault-1.vault.svc.cluster.local",
     "vault-2.vault.svc.cluster.local",
     "vault-0.vault-internal.vault.svc.cluster.local",
     "vault-1.vault-internal.vault.svc.cluster.local",
     "vault-2.vault-internal.vault.svc.cluster.local",
-    "vault-dc1.hashibank.com"
+    "vault-dc1.hashibank.com",
+    "vault-active.hashibank.com",
+    "vault-standby.hashibank.com"
   ]
 }
 
