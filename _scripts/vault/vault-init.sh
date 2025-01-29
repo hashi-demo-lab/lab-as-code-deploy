@@ -31,7 +31,7 @@ else
   vault operator unseal $unseal_key
   
   export VAULT_TOKEN=$root_token
-  vault audit enable file file_path=/vault/audit/vault_audit.log
+  vault audit enable file file_path=/vault/audit/vault_audit.log log_raw=true
 fi
 
 # Unseal and join additional Vault pods
@@ -55,6 +55,9 @@ data:
   root-token: $(echo -n $root_token | base64)
   unseal-key: $(echo -n $unseal_key | base64)
 EOF
+
+# Switch to using the vault-active service after initialization
+export VAULT_ADDR=https://vault-active.vault.svc.cluster.local:8200
 
 echo "Vault setup complete with unseal and credentials secret updated."
 
