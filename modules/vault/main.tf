@@ -79,15 +79,6 @@ resource "helm_release" "vault" {
   version    = var.vault_helm_version
 
   values = [ var.vault_helm ]
-  set {
-    name  = "server.ingress.hosts[0].host"
-    value = "vault-dc1.hashibank.com"
-  }
-
-  set {
-    name  = "server.ingress.tls[0].hosts[0]"
-    value = "vault-dc1.hashibank.com"
-  }
 }
 
 # Kubernetes job to initialize Vault
