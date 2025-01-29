@@ -20,20 +20,28 @@ server:
   
   updateStrategyType: "OnDelete"
 
-  logLevel: "debug"
+  logLevel: "trace"
 
   logFormat: "json"
 
   resources: {}
-
+  
   ingress:
     enabled: true
+    ingressClassName: "nginx"
+    activeService: true
     annotations:
       nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
       nginx.ingress.kubernetes.io/ssl-passthrough: "true"
-    activeService: true
-    ingressClassName: nginx
-  
+      nginx.ingress.kubernetes.io/rewrite-target: "/"
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    hosts:
+      - host: vault-dc1.hashibank.com
+    tls:
+      - secretName: vault-certificate
+        hosts:
+          - vault-dc1.hashibank.com
+
   authDelegator:
     enabled: true
   
@@ -48,7 +56,8 @@ server:
   extraEnvironmentVars:
     VAULT_CACERT: /vault/tls/ca.crt
     TZ: "Australia/Sydney"
-  
+    VAULT_API_ADDR: "https://vault-dc1.hashibank.com:8200"
+
   volumes:
     - name: vault-tls
       secret:
@@ -103,13 +112,13 @@ server:
         
         listener "tcp" {
           tls_disable = false
+          api_addr = "https://vault-dc1.hashibank.com:8200"
           address = "[::]:8200"
-          api_addr = "[::]:8200"
           cluster_address = "[::]:8201"
           tls_cert_file = "/vault/tls/tls.crt"
           tls_key_file = "/vault/tls/tls.key"
-          #tls_client_ca_file = "/vault/tls/ca.crt"
           tls_disable_client_certs = true
+          #tls_client_ca_file = "/vault/tls/ca.crt"
         }
         
         telemetry {
