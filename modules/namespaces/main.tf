@@ -9,6 +9,13 @@ locals {
     mysql      = "mysql"
     neo4j      = "neo4j"
     gitlab     = "gitlab"
+    app1       = "app1"
+    app2       = "app2"
+    app3-frontend      = "app3-frontend"
+    app3-backend       = "app3-backend"
+    app4-web   = "app4-web"
+    app4-api   = "app4-api"
+    app4-db    = "app4-db"
   }
 }
 
