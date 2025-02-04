@@ -24,6 +24,14 @@ datasources:
   datasources.yaml:
     apiVersion: 1
     datasources:
+    - name: Loki
+      type: loki
+      access: proxy
+      orgId: 1
+      url: http://loki.prometheus.svc.cluster.local:3100
+      isDefault: false
+      jsonData:
+        maxLines: 1000
     - name: prometheus
       type: prometheus
       access: server
