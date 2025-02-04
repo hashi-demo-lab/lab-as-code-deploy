@@ -4,7 +4,8 @@ locals {
   ca_cert_pem        = module.ca_cert.cert_file_path
 
   # Load file contents for Helm values and script for Vault
-  vault_helm_values          = file("${path.root}/_helm_charts/vault/values.yaml")
+  vault_helm_values          = file("${path.root}/_helm_charts/vault/values.vault.yaml")
+  vso_helm_values            = file("${path.root}/_helm_charts/vault/values.vso.yaml")
   vault_init_script_contents = file("${path.root}/_scripts/vault/vault-init.sh")
   decoded_root_token         = module.vault.root_token
 
@@ -23,6 +24,11 @@ locals {
   grafana_configmap       = file("./_helm_charts/grafana/configmap.yaml")               # Grafana ConfigMap for dashboards and configs
   grafana_helm_values     = file("./_helm_charts/grafana/values.grafana.yaml")          # Helm values for Grafana deployment
   grafana_vault_dashboard = file("./_helm_charts/grafana/vault_dashboard.grafana.json") # Grafana Vault dashboard JSON
+
+  # Loki Helm chart and ConfigMap for logging
+  loki_helm_values     = file("./_helm_charts/loki/values.loki.yaml")
+  promtail_helm_values = file("./_helm_charts/promtail/values.promtail.yaml")
+  grafana_loki_config  = file("./_helm_charts/grafana/loki_datasource.yaml")
 
   neo4j_helm_values = file("./_helm_charts/neo4j/values.neo4j.yaml") # Helm values for Neo4j deployment
 
