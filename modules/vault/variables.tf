@@ -59,3 +59,8 @@ variable "vault_helm" {
   description = "Helm values for deploying Vault"
   type        = string
 }
+
+variable "vso_helm" {
+  description = "Helm values for deploying Vault Secrets Operator"
+  type        = string
+}
