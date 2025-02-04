@@ -63,6 +63,18 @@ variable "grafana_helm_version" {
   default     = "~> 7"
 }
 
+variable "loki_helm_version" {
+  type        = string
+  description = "Loki Helm Release Version"
+  default     = "~> 2"
+}
+
+variable "promtail_helm_version" {
+  type        = string
+  description = "Promtail Helm Release Version"
+  default     = "~> 0"
+}
+
 variable "ldap_dns_names" {
   type        = list(string)
   description = "DNS names for LDAP certificate"
