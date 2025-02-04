@@ -16,6 +16,7 @@ locals {
     app4-web   = "app4-web"
     app4-api   = "app4-api"
     app4-db    = "app4-db"
+    app5       = "app5" 
   }
 }
 
