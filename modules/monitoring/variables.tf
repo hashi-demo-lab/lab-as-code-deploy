@@ -55,3 +55,27 @@ variable "grafana_helm_version" {
   type        = string
 }
 
+variable "loki_helm_version" {
+  description = "Loki Helm chart version"
+  type        = string
+}
+
+variable "loki_helm_values" {
+  description = "Content of Loki Helm values YAML file"
+  type        = string
+}
+
+variable "promtail_helm_version" {
+  description = "Promtail Helm chart version"
+  type        = string
+}
+
+variable "promtail_helm_values" {
+  description = "Content of Promtail Helm values YAML file"
+  type        = string
+}
+
+variable "grafana_loki_config" {
+  description = "Content of Grafana ConfigMap for Loki datasource"
+  type        = string
+}
