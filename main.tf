@@ -58,28 +58,28 @@ module "vault" {
   vault_init_script = local.vault_init_script_contents
 }
 
-# module "monitoring" {
-#   source = "./modules/monitoring"
+module "monitoring" {
+  source = "./modules/monitoring"
 
-#   prometheus_namespace = module.namespaces.prometheus_namespace
-#   grafana_namespace    = module.namespaces.grafana_namespace
-#   ca_cert_pem          = module.ca_cert.cert_pem # From ca_cert module
+  prometheus_namespace = module.namespaces.prometheus_namespace
+  grafana_namespace    = module.namespaces.grafana_namespace
+  ca_cert_pem          = module.ca_cert.cert_pem # From ca_cert module
 
-#   prometheus_helm_version = var.prometheus_helm_version
-#   grafana_helm_version    = var.grafana_helm_version
-#   loki_helm_version       = var.loki_helm_version 
-#   promtail_helm_version   = var.promtail_helm_version
+  prometheus_helm_version = var.prometheus_helm_version
+  grafana_helm_version    = var.grafana_helm_version
+  loki_helm_version       = var.loki_helm_version
+  promtail_helm_version   = var.promtail_helm_version
 
-#   prometheus_helm_values   = local.prometheus_helm_values   # Loaded from a file
-#   grafana_helm_values      = local.grafana_helm_values      # Loaded from a file
-#   loki_helm_values         = local.loki_helm_values
-#   promtail_helm_values     = local.promtail_helm_values
-#   prometheus_scrape_config = local.prometheus_scrape_config # Loaded from a file
-#   grafana_configmap        = local.grafana_configmap
-#   grafana_dashboards       = local.grafana_vault_dashboard # Loaded from a file
-#   grafana_loki_config      = local.grafana_loki_config
-#   vault_root_token         = local.decoded_root_token
-# }
+  prometheus_helm_values   = local.prometheus_helm_values # Loaded from a file
+  grafana_helm_values      = local.grafana_helm_values    # Loaded from a file
+  loki_helm_values         = local.loki_helm_values
+  promtail_helm_values     = local.promtail_helm_values
+  prometheus_scrape_config = local.prometheus_scrape_config # Loaded from a file
+  grafana_configmap        = local.grafana_configmap
+  grafana_dashboards       = local.grafana_vault_dashboard # Loaded from a file
+  grafana_loki_config      = local.grafana_loki_config
+  vault_root_token         = local.decoded_root_token
+}
 
 # module "neo4j" {
 #   source = "./modules/neo4j"
@@ -135,4 +135,8 @@ module "gitlab_runner" {
 
   runner_registration_token = var.gitlab_runner_token
   gitlab_runner_helm_values = local.gitlab_runner_helm_values
+}
+
+module "cert-manager" {
+  source = "./modules/cert-manager"
 }
