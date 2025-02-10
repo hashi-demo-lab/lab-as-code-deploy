@@ -140,7 +140,7 @@ resource "helm_release" "loki" {
   repository = "https://grafana.github.io/helm-charts"
   chart      = "loki"
   namespace  = var.prometheus_namespace
-  version = var.loki_helm_version
+  version    = var.loki_helm_version
 
   values = [var.loki_helm_values]
 }
@@ -150,7 +150,7 @@ resource "helm_release" "promtail" {
   repository = "https://grafana.github.io/helm-charts"
   chart      = "promtail"
   namespace  = var.prometheus_namespace
-  version = var.promtail_helm_version
+  version    = var.promtail_helm_version
 
   values = [var.promtail_helm_values]
 }
