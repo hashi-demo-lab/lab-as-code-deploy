@@ -8,6 +8,6 @@ resource "helm_release" "vault_secrets_operator" {
   namespace  = var.vault_namespace
   version    = var.vault_helm_version
 
-  values = [ var.vso_helm ]
+  values = [var.vso_helm]
 }
 
