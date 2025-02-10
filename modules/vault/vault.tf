@@ -70,15 +70,15 @@ resource "kubernetes_role_binding_v1" "vault_init_role_binding" {
 }
 
 resource "helm_release" "vault" {
-  depends_on = [ kubernetes_secret_v1.vault_license, kubernetes_secret_v1.vault_tls ]
-  
+  depends_on = [kubernetes_secret_v1.vault_license, kubernetes_secret_v1.vault_tls]
+
   name       = "vault"
   repository = "https://helm.releases.hashicorp.com"
   chart      = "vault"
   namespace  = var.vault_namespace
   version    = var.vault_helm_version
 
-  values = [ var.vault_helm ]
+  values = [var.vault_helm]
 }
 
 # Kubernetes job to initialize Vault
