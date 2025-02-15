@@ -74,6 +74,7 @@ locals {
     namespace         = var.vault_namespace
     vault_common_name = var.vault_common_name
     vault_ha_enabled  = var.vault_ha_enabled
+    enable_service_registration = var.enable_service_registration
     vault_replicas    = var.vault_replicas
     configure_seal       = var.configure_seal
     auto_unseal_addr     = var.auto_unseal_addr    # e.g. "vault-autounseal.hashibank.com:8200"
@@ -97,7 +98,6 @@ resource "helm_release" "vault" {
   values = [local.vault_helm_values]
   #values = [var.vault_helm]
 }
-
 
 # Kubernetes job to initialize Vault
 resource "kubernetes_job_v1" "vault_init" {
