@@ -24,10 +24,10 @@
   isDefault: true
   jsonData:
     allowedHosts:
-      - "https://vault.vault.svc.cluster.local"
+      - "https://vault.primary-vault.svc.cluster.local"
     auth_method: "bearerToken"
     customHealthCheckEnabled: true
-    customHealthCheckUrl: "https://vault.vault.svc.cluster.local:8200/v1/sys/health"
+    customHealthCheckUrl: "https://vault.primary-vault.svc.cluster.local:8200/v1/sys/health"
     global_queries: []
     oauthPassThru: false
     tlsSkipVerify: true
