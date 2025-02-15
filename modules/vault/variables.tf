@@ -106,3 +106,9 @@ variable "vault_mode" {
   description = "Mode of this Vault deployment: 'primary' or 'auto_unseal'"
   type        = string
 }
+
+variable "enable_service_registration" {
+  description = "Enable Kubernetes service registration for Vault"
+  type        = bool
+  default     = true
+}
