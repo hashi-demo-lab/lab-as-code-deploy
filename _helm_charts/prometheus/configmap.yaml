@@ -10,7 +10,7 @@ scrape_configs:
       format: ['prometheus']
     scheme: https
     static_configs:
-      - targets: ['vault.vault.svc.cluster.local:8200']
+      - targets: ['vault.primary-vault.svc.cluster.local:8200']
     tls_config:
       ca_file: '/etc/prometheus/ca.crt'
       insecure_skip_verify: false
