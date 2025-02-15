@@ -20,7 +20,7 @@ server:
 
   updateStrategyType: "OnDelete"
 
-  logLevel: "debug"
+  logLevel: "info"
 
   logFormat: "json"
 
@@ -124,7 +124,9 @@ server:
           disable_hostname = true
         }
 
+        %{ if enable_service_registration }
         service_registration "kubernetes" {}
+        %{ endif }
 
         %{ if configure_seal }
         seal "transit" {
