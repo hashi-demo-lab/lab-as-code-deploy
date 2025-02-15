@@ -4,10 +4,11 @@ locals {
   ca_cert_pem        = module.ca_cert.cert_file_path
 
   # Load file contents for Helm values and script for Vault
-  vault_helm_values          = file("${path.root}/_helm_charts/vault/values.vault.yaml")
-  vso_helm_values            = file("${path.root}/_helm_charts/vault/values.vso.yaml")
-  vault_init_script_contents = file("${path.root}/_scripts/vault/vault-init.sh")
-  decoded_root_token         = module.vault.root_token
+  vault_helm_values                 = file("${path.root}/_helm_charts/vault/values.vault.yaml")
+  vso_helm_values                   = file("${path.root}/_helm_charts/vault/values.vso.yaml")
+  vault_init_script_contents        = file("${path.root}/_scripts/vault/vault-init.sh")
+  vault_auto_unseal_script_contents = file("${path.root}/_scripts/vault/auto-unseal-init.sh")
+  decoded_root_token                = module.primary_vault.root_token
 
   # OpenLDAP manifests for deployment and services
   openldap_statefulset = file("${path.root}/_manifests/openldap/statefulset.yaml")
