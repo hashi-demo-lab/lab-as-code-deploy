@@ -60,6 +60,7 @@ module "auto_unseal_vault" {
   vault_init_script  = local.vault_auto_unseal_script_contents
   configure_seal     = false
   vault_mode         = "auto_unseal"
+  enable_service_registration = false
 }
 
 module "primary_vault_cert" {
@@ -100,6 +101,7 @@ module "primary_vault" {
   vault_init_script = local.vault_init_script_contents
   configure_seal    = true
   vault_mode        = "primary"
+  enable_service_registration = true
 }
 
 
