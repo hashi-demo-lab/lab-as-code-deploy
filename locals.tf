@@ -35,5 +35,4 @@ locals {
 
   # GitLab Runner Helm chart and ConfigMap for Runner registration
   gitlab_runner_helm_values = file("./_helm_charts/gitlab_runner/values.yaml") # Helm values for GitLab Runner deployment
-
 }
