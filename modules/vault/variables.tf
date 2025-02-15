@@ -25,6 +25,12 @@ variable "vault_helm_version" {
   default     = "~> 0"
 }
 
+variable "vault_release_name" {
+  description = "The Helm release name for the Vault deployment"
+  type        = string
+  default     = "vault"
+}
+
 variable "vault_license" {
   type        = string
   description = "Vault License"
@@ -62,5 +68,41 @@ variable "vault_helm" {
 
 variable "vso_helm" {
   description = "Helm values for deploying Vault Secrets Operator"
+  type        = string
+  default     = null
+}
+
+variable "vault_ha_enabled" {
+  description = "Enable high availability mode for Vault"
+  type        = bool
+  default     = true
+}
+
+variable "vault_replicas" {
+  description = "Number of Vault replicas for HA mode"
+  type        = number
+  default     = 3
+}
+
+variable "configure_seal" {
+  description = "Whether to configure the seal stanza"
+  type        = bool
+  default     = false
+}
+
+variable "auto_unseal_addr" {
+  description = "The address of the auto-unseal Vault to be used by the primary Vault"
+  type        = string
+  default     = "auto-unseal-vault-0.auto-unseal-vault-internal.auto-unseal-vault.svc.cluster.local:8200"
+}
+
+variable "auto_unseal_key_name" {
+  description = "The transit key name to use for auto unseal"
+  type        = string
+  default     = "autounseal"
+}
+
+variable "vault_mode" {
+  description = "Mode of this Vault deployment: 'primary' or 'auto_unseal'"
   type        = string
 }
