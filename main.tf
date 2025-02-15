@@ -20,14 +20,56 @@ module "ingress_nginx" {
   ingress_namespace = module.namespaces.nginx_namespace
 }
 
-module "vault_cert" {
+module "auto_unseal_vault_cert" {
   source = "./modules/cert_creation"
 
   ca_private_key_pem = module.ca_cert.private_key_pem
   ca_cert_pem        = module.ca_cert.cert_pem
 
-  common_name  = var.vault_common_name
-  dns_names    = var.vault_dns_names
+  common_name  = var.auto_unseal_vault_common_name
+  dns_names    = var.auto_unseal_vault_dns_names
+  organization = var.organization
+
+  is_ca_certificate     = false
+  validity_period_hours = 8760
+  cert_file_name        = "auto_unseal_vault.crt"
+  key_file_name         = "auto_unseal_vault.key"
+  save_to_file          = true
+}
+
+module "auto_unseal_vault" {
+  source     = "./modules/vault"
+  #depends_on = [module.ingress_nginx]
+
+  vault_namespace = module.namespaces.auto_unseal_vault_namespace
+
+  # Use the certificate created for the auto‑unseal Vault.
+  vault_cert_pem        = module.auto_unseal_vault_cert.cert_pem
+  vault_private_key_pem = module.auto_unseal_vault_cert.private_key_pem
+  ca_cert_pem           = module.ca_cert.cert_pem
+
+  vault_dns_names   = var.auto_unseal_vault_dns_names
+  vault_common_name = var.auto_unseal_vault_common_name
+  organization      = var.organization
+
+  # For auto‑unseal, deploy as a single‑node (HA disabled).
+  vault_license      = var.vault_license
+  vault_release_name = "auto-unseal-vault"
+  vault_helm         = local.vault_helm_values
+  vault_ha_enabled   = false
+  vault_init_script  = local.vault_auto_unseal_script_contents
+  configure_seal     = false
+  vault_mode         = "auto_unseal"
+}
+
+module "primary_vault_cert" {
+  source = "./modules/cert_creation"
+
+  ca_private_key_pem = module.ca_cert.private_key_pem
+  ca_cert_pem        = module.ca_cert.cert_pem
+
+  common_name  = var.primary_vault_common_name
+  dns_names    = var.primary_vault_dns_names
   organization = var.organization
 
   is_ca_certificate     = false
@@ -37,106 +79,109 @@ module "vault_cert" {
   save_to_file          = true
 }
 
-module "vault" {
+module "primary_vault" {
   source     = "./modules/vault"
-  depends_on = [module.ingress_nginx]
+  depends_on = [ module.auto_unseal_vault ]
 
-  vault_namespace = module.namespaces.vault_namespace
+  vault_namespace = module.namespaces.primary_vault_namespace
 
   # Pass certificate and key data from the vault_cert module
-  vault_cert_pem        = module.vault_cert.cert_pem
-  vault_private_key_pem = module.vault_cert.private_key_pem
+  vault_cert_pem        = module.primary_vault_cert.cert_pem
+  vault_private_key_pem = module.primary_vault_cert.private_key_pem
   ca_cert_pem           = module.ca_cert.cert_pem
 
   organization      = var.organization
-  vault_license     = var.vault_license
-  vault_dns_names   = var.vault_dns_names
-  vault_common_name = var.vault_common_name
+  vault_dns_names   = var.primary_vault_dns_names
+  vault_common_name = var.primary_vault_common_name
 
+  vault_license     = var.vault_license
   vault_helm        = local.vault_helm_values
   vso_helm          = local.vso_helm_values
   vault_init_script = local.vault_init_script_contents
+  configure_seal    = true
+  vault_mode        = "primary"
 }
 
-module "monitoring" {
-  source = "./modules/monitoring"
 
-  prometheus_namespace = module.namespaces.prometheus_namespace
-  grafana_namespace    = module.namespaces.grafana_namespace
-  ca_cert_pem          = module.ca_cert.cert_pem # From ca_cert module
+# module "monitoring" {
+#   source = "./modules/monitoring"
 
-  prometheus_helm_version = var.prometheus_helm_version
-  grafana_helm_version    = var.grafana_helm_version
-  loki_helm_version       = var.loki_helm_version
-  promtail_helm_version   = var.promtail_helm_version
+#   prometheus_namespace = module.namespaces.prometheus_namespace
+#   grafana_namespace    = module.namespaces.grafana_namespace
+#   ca_cert_pem          = module.ca_cert.cert_pem # From ca_cert module
 
-  prometheus_helm_values   = local.prometheus_helm_values # Loaded from a file
-  grafana_helm_values      = local.grafana_helm_values    # Loaded from a file
-  loki_helm_values         = local.loki_helm_values
-  promtail_helm_values     = local.promtail_helm_values
-  prometheus_scrape_config = local.prometheus_scrape_config # Loaded from a file
-  grafana_configmap        = local.grafana_configmap
-  grafana_dashboards       = local.grafana_vault_dashboard # Loaded from a file
-  grafana_loki_config      = local.grafana_loki_config
-  vault_root_token         = local.decoded_root_token
-}
+#   prometheus_helm_version = var.prometheus_helm_version
+#   grafana_helm_version    = var.grafana_helm_version
+#   loki_helm_version       = var.loki_helm_version
+#   promtail_helm_version   = var.promtail_helm_version
 
-# module "neo4j" {
-#   source = "./modules/neo4j"
-
-#   neo4j_namespace   = module.namespaces.neo4j_namespace
-#   helm_release_name = "neo4j"
-#   helm_repository   = "https://helm.neo4j.com/neo4j"
-#   helm_chart_name   = "neo4j"
-#   helm_values       = local.neo4j_helm_values
+#   prometheus_helm_values   = local.prometheus_helm_values # Loaded from a file
+#   grafana_helm_values      = local.grafana_helm_values    # Loaded from a file
+#   loki_helm_values         = local.loki_helm_values
+#   promtail_helm_values     = local.promtail_helm_values
+#   prometheus_scrape_config = local.prometheus_scrape_config # Loaded from a file
+#   grafana_configmap        = local.grafana_configmap
+#   grafana_dashboards       = local.grafana_vault_dashboard # Loaded from a file
+#   grafana_loki_config      = local.grafana_loki_config
+#   vault_root_token         = local.decoded_root_token
 # }
 
+# # module "neo4j" {
+# #   source = "./modules/neo4j"
 
-module "ldap_cert" {
-  source = "./modules/cert_creation"
+# #   neo4j_namespace   = module.namespaces.neo4j_namespace
+# #   helm_release_name = "neo4j"
+# #   helm_repository   = "https://helm.neo4j.com/neo4j"
+# #   helm_chart_name   = "neo4j"
+# #   helm_values       = local.neo4j_helm_values
+# # }
 
-  ca_private_key_pem = module.ca_cert.private_key_pem
-  ca_cert_pem        = module.ca_cert.cert_pem
 
-  common_name  = var.ldap_common_name
-  dns_names    = var.ldap_dns_names
-  organization = var.organization
+# module "ldap_cert" {
+#   source = "./modules/cert_creation"
 
-  is_ca_certificate     = false
-  validity_period_hours = 8760
-  cert_file_name        = "ldap.crt"
-  key_file_name         = "ldap.key"
-  save_to_file          = true
-}
+#   ca_private_key_pem = module.ca_cert.private_key_pem
+#   ca_cert_pem        = module.ca_cert.cert_pem
 
-module "ldap" {
-  source         = "./modules/ldap"
-  ldap_namespace = module.namespaces.ldap_namespace
+#   common_name  = var.ldap_common_name
+#   dns_names    = var.ldap_dns_names
+#   organization = var.organization
 
-  # Pass certificate and key data from the ldap_cert module
-  ldap_cert_pem        = module.ldap_cert.cert_pem
-  ldap_private_key_pem = module.ldap_cert.private_key_pem
-  ca_cert_pem          = module.ca_cert.cert_pem
+#   is_ca_certificate     = false
+#   validity_period_hours = 8760
+#   cert_file_name        = "ldap.crt"
+#   key_file_name         = "ldap.key"
+#   save_to_file          = true
+# }
 
-  # Other manifest content and LDIF data
-  openldap_statefulset = local.openldap_statefulset
-  openldap_service     = local.openldap_service
-  phpldapadmin_service = local.phpldapadmin_service
-  openldap_ingress     = local.openldap_ingress
-  ldap_ldif_data       = local.ldap_ldif_data
-}
+# module "ldap" {
+#   source         = "./modules/ldap"
+#   ldap_namespace = module.namespaces.ldap_namespace
 
-module "gitlab_runner" {
-  source = "./modules/gitlab_runner"
+#   # Pass certificate and key data from the ldap_cert module
+#   ldap_cert_pem        = module.ldap_cert.cert_pem
+#   ldap_private_key_pem = module.ldap_cert.private_key_pem
+#   ca_cert_pem          = module.ca_cert.cert_pem
 
-  namespace     = module.namespaces.gitlab_namespace
-  release_name  = "gitlab-runner"
-  chart_version = "0.70.3" # Specify the GitLab Runner chart version you need
+#   # Other manifest content and LDIF data
+#   openldap_statefulset = local.openldap_statefulset
+#   openldap_service     = local.openldap_service
+#   phpldapadmin_service = local.phpldapadmin_service
+#   openldap_ingress     = local.openldap_ingress
+#   ldap_ldif_data       = local.ldap_ldif_data
+# }
 
-  runner_registration_token = var.gitlab_runner_token
-  gitlab_runner_helm_values = local.gitlab_runner_helm_values
-}
+# module "gitlab_runner" {
+#   source = "./modules/gitlab_runner"
 
-module "cert-manager" {
-  source = "./modules/cert-manager"
-}
+#   namespace     = module.namespaces.gitlab_namespace
+#   release_name  = "gitlab-runner"
+#   chart_version = "0.70.3" # Specify the GitLab Runner chart version you need
+
+#   runner_registration_token = var.gitlab_runner_token
+#   gitlab_runner_helm_values = local.gitlab_runner_helm_values
+# }
+
+# # module "cert-manager" {
+# #   source = "./modules/cert-manager"
+# # }
