@@ -3,8 +3,7 @@ module "namespaces" {
 }
 
 module "ca_cert" {
-  source = "./modules/cert_creation"
-
+  source                = "./modules/cert_creation"
   common_name           = "vault-ca"
   organization          = "HashiBank"
   is_ca_certificate     = true
@@ -15,21 +14,17 @@ module "ca_cert" {
 }
 
 module "ingress_nginx" {
-  source = "./modules/ingress_nginx"
-
+  source            = "./modules/ingress_nginx"
   ingress_namespace = module.namespaces.nginx_namespace
 }
 
 module "auto_unseal_vault_cert" {
-  source = "./modules/cert_creation"
-
-  ca_private_key_pem = module.ca_cert.private_key_pem
-  ca_cert_pem        = module.ca_cert.cert_pem
-
-  common_name  = var.auto_unseal_vault_common_name
-  dns_names    = var.auto_unseal_vault_dns_names
-  organization = var.organization
-
+  source                = "./modules/cert_creation"
+  ca_private_key_pem    = module.ca_cert.private_key_pem
+  ca_cert_pem           = module.ca_cert.cert_pem
+  common_name           = var.auto_unseal_vault_common_name
+  dns_names             = var.auto_unseal_vault_dns_names
+  organization          = var.organization
   is_ca_certificate     = false
   validity_period_hours = 8760
   cert_file_name        = "auto_unseal_vault.crt"
@@ -38,8 +33,7 @@ module "auto_unseal_vault_cert" {
 }
 
 module "auto_unseal_vault" {
-  source     = "./modules/vault"
-  #depends_on = [module.ingress_nginx]
+  source = "./modules/vault"
 
   vault_namespace = module.namespaces.auto_unseal_vault_namespace
 
@@ -53,26 +47,23 @@ module "auto_unseal_vault" {
   organization      = var.organization
 
   # For auto‑unseal, deploy as a single‑node (HA disabled).
-  vault_license      = var.vault_license
-  vault_release_name = "auto-unseal-vault"
-  vault_helm         = local.vault_helm_values
-  vault_ha_enabled   = false
-  vault_init_script  = local.vault_auto_unseal_script_contents
-  configure_seal     = false
-  vault_mode         = "auto_unseal"
+  vault_license               = var.vault_license
+  vault_release_name          = "auto-unseal-vault"
+  vault_helm                  = local.vault_helm_values
+  vault_ha_enabled            = false
+  vault_init_script           = local.vault_auto_unseal_script_contents
+  configure_seal              = false
+  vault_mode                  = "auto_unseal"
   enable_service_registration = false
 }
 
 module "primary_vault_cert" {
-  source = "./modules/cert_creation"
-
-  ca_private_key_pem = module.ca_cert.private_key_pem
-  ca_cert_pem        = module.ca_cert.cert_pem
-
-  common_name  = var.primary_vault_common_name
-  dns_names    = var.primary_vault_dns_names
-  organization = var.organization
-
+  source                = "./modules/cert_creation"
+  ca_private_key_pem    = module.ca_cert.private_key_pem
+  ca_cert_pem           = module.ca_cert.cert_pem
+  common_name           = var.primary_vault_common_name
+  dns_names             = var.primary_vault_dns_names
+  organization          = var.organization
   is_ca_certificate     = false
   validity_period_hours = 8760
   cert_file_name        = "vault.crt"
@@ -82,7 +73,7 @@ module "primary_vault_cert" {
 
 module "primary_vault" {
   source     = "./modules/vault"
-  depends_on = [ module.auto_unseal_vault ]
+  depends_on = [module.auto_unseal_vault]
 
   vault_namespace = module.namespaces.primary_vault_namespace
 
@@ -95,15 +86,14 @@ module "primary_vault" {
   vault_dns_names   = var.primary_vault_dns_names
   vault_common_name = var.primary_vault_common_name
 
-  vault_license     = var.vault_license
-  vault_helm        = local.vault_helm_values
-  vso_helm          = local.vso_helm_values
-  vault_init_script = local.vault_init_script_contents
-  configure_seal    = true
-  vault_mode        = "primary"
+  vault_license               = var.vault_license
+  vault_helm                  = local.vault_helm_values
+  vso_helm                    = local.vso_helm_values
+  vault_init_script           = local.vault_init_script_contents
+  configure_seal              = true
+  vault_mode                  = "primary"
   enable_service_registration = true
 }
-
 
 # module "monitoring" {
 #   source = "./modules/monitoring"
