@@ -788,7 +788,7 @@
           "source": "url",
           "type": "json",
           "uql": "parse-json\n| scope \"data.total\"\n\n\n",
-          "url": "https://vault.vault.svc.cluster.local:8200/v1/sys/internal/counters/activity/monthly",
+          "url": "https://vault.primary-vault.svc.cluster.local:8200/v1/sys/internal/counters/activity/monthly",
           "url_options": {
             "data": "",
             "method": "GET"
@@ -1222,6 +1222,7 @@
       "type": "timeseries"
     },
     {
+
       "datasource": {
         "type": "yesoreyeram-infinity-datasource",
         "uid": "PD0067CAD9A63E081"
@@ -1304,6 +1305,32 @@
                 "value": 345
               }
             ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "non_entity"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "false": {
+                        "color": "green",
+                        "text": "false"
+                      },
+                      "true": {
+                        "color": "red",
+                        "text": "true"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
           }
         ]
       },
@@ -1376,7 +1403,7 @@
           "source": "url",
           "type": "csv",
           "uql": "parse-csv --delimiter \"\t\"",
-          "url": "https://vault.vault.svc.cluster.local:8200/v1/sys/internal/counters/activity/export",
+          "url": "https://vault.primary-vault.svc.cluster.local:8200/v1/sys/internal/counters/activity/export",
           "url_options": {
             "data": "",
             "method": "GET",
@@ -1837,7 +1864,7 @@
           "source": "url",
           "type": "json",
           "uql": "parse-json",
-          "url": "https://vault.vault.svc.cluster.local:8200/v1/identity/alias/id?list=true",
+          "url": "https://vault.primary-vault.svc.cluster.local:8200/v1/identity/alias/id?list=true",
           "url_options": {
             "data": "",
             "method": "GET",
@@ -1952,7 +1979,7 @@
           "source": "url",
           "type": "json",
           "uql": "parse-csv --delimiter \"\t\"",
-          "url": "https://vault.vault.svc.cluster.local:8200/v1/identity/entity/name?list=true",
+          "url": "https://vault.primary-vault.svc.cluster.local:8200/v1/identity/entity/name?list=true",
           "url_options": {
             "data": "",
             "method": "GET",
@@ -2047,7 +2074,7 @@
           "source": "url",
           "type": "json",
           "uql": "parse-csv --delimiter \"\t\"",
-          "url": "https://vault.vault.svc.cluster.local:8200/v1/identity/entity/id?list=true",
+          "url": "https://vault.primary-vault.svc.cluster.local:8200/v1/identity/entity/id?list=true",
           "url_options": {
             "data": "",
             "method": "GET",
