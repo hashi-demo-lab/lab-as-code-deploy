@@ -5,9 +5,14 @@ output "nginx_namespace" {
   value       = kubernetes_namespace.namespace["nginx"].metadata[0].name
 }
 
-output "vault_namespace" {
-  description = "The namespace for Vault"
-  value       = kubernetes_namespace.namespace["vault"].metadata[0].name
+output "primary_vault_namespace" {
+  description = "The namespace for Priamry Vault"
+  value       = kubernetes_namespace.namespace["primary-vault"].metadata[0].name
+}
+
+output "auto_unseal_vault_namespace" {
+  description = "The namespace for Auto Unseal Vault"
+  value       = kubernetes_namespace.namespace["auto-unseal-vault"].metadata[0].name
 }
 
 output "prometheus_namespace" {
