@@ -32,3 +32,8 @@ variable "enable_ssl_passthrough" {
   type        = bool
   default     = true
 }
+
+variable "ca_cert_pem" {
+  description = "The CA certificate in PEM format used for TLS trust."
+  type        = string
+}
