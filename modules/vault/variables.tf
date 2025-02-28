@@ -1,3 +1,5 @@
+# module/vault/variables.tf
+
 variable "vault_cert_pem" {
   description = "PEM-encoded LDAP certificate"
   type        = string
@@ -56,9 +58,15 @@ variable "vault_namespace" {
   description = "Namespace for Vault"
 }
 
-variable "vault_init_script" {
-  description = "contents of vault-init.sh script"
+variable "vault_initialization_script" {
+  description = "Contents of a Vault initialization script"
   type        = string
+}
+
+variable "auto_unseal_transit_config_script" {
+  description = "Contents of a transit secret engine configuration script"
+  type        = string
+  default     = ""
 }
 
 variable "vault_helm" {
@@ -111,4 +119,22 @@ variable "enable_service_registration" {
   description = "Enable Kubernetes service registration for Vault"
   type        = bool
   default     = true
+}
+
+variable "aws_access_key_id" {
+  description = "AWS Access Key ID from Doormat"
+  type        = string
+  default     = ""
+}
+
+variable "aws_secret_access_key" {
+  description = "AWS Secret Access Key from Doormat"
+  type        = string
+  default     = ""
+}
+
+variable "aws_session_token" {
+  description = "AWS Session Token from Doormat"
+  type        = string
+  default     = ""
 }
