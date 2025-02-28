@@ -18,7 +18,7 @@ server:
     tag: "latest"
     pullPolicy: IfNotPresent
 
-  updateStrategyType: "OnDelete"
+  updateStrategyType: "%{ if vault_mode == "primary" }RollingUpdate%{ else }OnDelete%{ endif }"
 
   logLevel: "info"
 
@@ -33,8 +33,9 @@ server:
     annotations:
       nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
       nginx.ingress.kubernetes.io/ssl-passthrough: "true"
-      nginx.ingress.kubernetes.io/rewrite-target: "/"
       nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/proxy-ssl-secret: "${namespace}/vault-certificate"
+
     hosts:
       - host: "${vault_common_name}"
     tls:
@@ -46,6 +47,8 @@ server:
     enabled: true
 
   readinessProbe:
+    enabled: true
+    path: "/v1/sys/health?standbyok=true&perfstandbyok=true&sealedcode=200&uninitcode=200"
     port: 8200
     failureThreshold: 2
     initialDelaySeconds: 5
@@ -56,6 +59,19 @@ server:
   extraEnvironmentVars:
     VAULT_CACERT: /vault/tls/ca.crt
     TZ: "Australia/Sydney"
+  
+  %{ if vault_mode == "primary" }
+  extraSecretEnvironmentVars:
+    - envName: AWS_ACCESS_KEY_ID
+      secretName: aws-credentials
+      secretKey: AWS_ACCESS_KEY_ID
+    - envName: AWS_SECRET_ACCESS_KEY
+      secretName: aws-credentials
+      secretKey: AWS_SECRET_ACCESS_KEY
+    - envName: AWS_SESSION_TOKEN
+      secretName: aws-credentials
+      secretKey: AWS_SESSION_TOKEN
+  %{ endif }
 
   volumes:
     - name: vault-tls
@@ -119,9 +135,10 @@ server:
           tls_disable_client_certs = false 
         }
         
-        telemetry {
-          prometheus_retention_time = "4h"
-          disable_hostname = true
+        telemetry { 
+          unauthenticated_metrics_access = true
+          prometheus_retention_time = "48h"
+          disable_hostname = false
         }
 
         %{ if enable_service_registration }
