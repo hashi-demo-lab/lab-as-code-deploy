@@ -43,7 +43,7 @@ resource "tls_locally_signed_cert" "signed_cert" {
   ca_cert_pem        = var.ca_cert_pem
   validity_period_hours = var.validity_period_hours
   early_renewal_hours   = var.early_renewal_hours
-  allowed_uses = ["key_encipherment", "digital_signature", "server_auth"]
+  allowed_uses = ["key_encipherment", "digital_signature", "server_auth", "client_auth"]
 }
 
 resource "local_file" "cert_file" {
