@@ -1,8 +1,13 @@
-# locals.tf
+# Load the existing Root CA certificate and key from the "certificates" directory
+data "local_file" "root_ca_cert" {
+  filename = "${path.root}/../certificates/lab-root-ca.crt"
+}
+
+data "local_file" "root_ca_key" {
+  filename = "${path.root}/../certificates/lab-root-ca.key"
+}
+
 locals {
-  ca_private_key_pem                = module.ca_cert.key_file_path
-  ca_cert_pem                       = module.ca_cert.cert_file_path
-  vault_helm_values                 = file("${path.root}/_helm_charts/vault/values.vault.yaml")
   vso_helm_values                   = file("${path.root}/_helm_charts/vault/values.vso.yaml")
   auto_unseal_vault_init_script     = file("${path.root}/_scripts/vault/auto-unseal-vault-init.sh")
   auto_unseal_transit_config_script = file("${path.root}/_scripts/vault/auto-unseal-transit-config.sh")
@@ -12,6 +17,7 @@ locals {
   phpldapadmin_service              = file("${path.root}/_manifests/openldap/phpldapadmin_service.yaml")
   openldap_ingress                  = file("${path.root}/_manifests/openldap/ingress.yaml")
   ldap_ldif_data                    = file("${path.root}/_manifests/openldap/hashibank.ldif")
+  hostname_manifest                 = file("${path.root}/_manifests/hostnaming-service/hostname.yaml")
   prometheus_scrape_config          = file("./_helm_charts/prometheus/configmap.yaml")
   prometheus_helm_values            = file("./_helm_charts/prometheus/values.prometheus.yaml")
   grafana_configmap                 = file("./_helm_charts/grafana/configmap.yaml")
@@ -23,6 +29,7 @@ locals {
   neo4j_helm_values                 = file("./_helm_charts/neo4j/values.neo4j.yaml")
   gitlab_runner_helm_values         = file("./_helm_charts/gitlab_runner/values.yaml")
   decoded_root_token                = module.primary_vault.root_token
+  
 }
 
 # CA Private Key and Certificate used for signing Vault certificates
