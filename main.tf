@@ -101,28 +101,28 @@ resource "onepassword_item" "vault_root_token" {
   password = module.primary_vault.root_token
 }
 
-# module "monitoring" {
-#   source = "./modules/monitoring"
+module "monitoring" {
+  source = "./modules/monitoring"
 
-#   prometheus_namespace = module.namespaces.prometheus_namespace
-#   grafana_namespace    = module.namespaces.grafana_namespace
-#   ca_cert_pem          = module.ca_cert.cert_pem # From ca_cert module
+  ca_cert_pem          = data.local_file.root_ca_cert.content
+  prometheus_namespace = module.namespaces.prometheus_namespace
+  grafana_namespace    = module.namespaces.grafana_namespace
+  
+  prometheus_helm_version = var.prometheus_helm_version
+  grafana_helm_version    = var.grafana_helm_version
+  loki_helm_version       = var.loki_helm_version
+  promtail_helm_version   = var.promtail_helm_version
 
-#   prometheus_helm_version = var.prometheus_helm_version
-#   grafana_helm_version    = var.grafana_helm_version
-#   loki_helm_version       = var.loki_helm_version
-#   promtail_helm_version   = var.promtail_helm_version
-
-#   prometheus_helm_values   = local.prometheus_helm_values # Loaded from a file
-#   grafana_helm_values      = local.grafana_helm_values    # Loaded from a file
-#   loki_helm_values         = local.loki_helm_values
-#   promtail_helm_values     = local.promtail_helm_values
-#   prometheus_scrape_config = local.prometheus_scrape_config # Loaded from a file
-#   grafana_configmap        = local.grafana_configmap
-#   grafana_dashboards       = local.grafana_vault_dashboard # Loaded from a file
-#   grafana_loki_config      = local.grafana_loki_config
-#   vault_root_token         = local.decoded_root_token
-# }
+  prometheus_helm_values   = local.prometheus_helm_values # Loaded from a file
+  grafana_helm_values      = local.grafana_helm_values    # Loaded from a file
+  loki_helm_values         = local.loki_helm_values
+  promtail_helm_values     = local.promtail_helm_values
+  prometheus_scrape_config = local.prometheus_scrape_config # Loaded from a file
+  grafana_configmap        = local.grafana_configmap
+  grafana_dashboards       = local.grafana_vault_dashboard # Loaded from a file
+  grafana_loki_config      = local.grafana_loki_config
+  vault_root_token         = local.decoded_root_token
+}
 
 # module "neo4j" {
 #   source = "./modules/neo4j"
@@ -138,8 +138,8 @@ resource "onepassword_item" "vault_root_token" {
 # module "ldap_cert" {
 #   source = "./modules/cert_creation"
 
-#   ca_private_key_pem = module.ca_cert.private_key_pem
-#   ca_cert_pem        = module.ca_cert.cert_pem
+#   ca_private_key_pem = data.local_file.root_ca_key.content
+#   ca_cert_pem          = data.local_file.root_ca_cert.content
 
 #   common_name  = var.ldap_common_name
 #   dns_names    = var.ldap_dns_names
@@ -184,9 +184,9 @@ resource "onepassword_item" "vault_root_token" {
 # #   source = "./modules/cert-manager"
 # # }
 
-module "hostname_service" {
-  source = "./modules/hostnaming-service"
+# module "hostname_service" {
+#   source = "./modules/hostnaming-service"
 
-  namespace = module.namespaces.hostnaming-service_namespace
-  hostname_manifest = local.hostname_manifest
-}
+#   namespace = module.namespaces.hostnaming-service_namespace
+#   hostname_manifest = local.hostname_manifest
+# }
