@@ -15,19 +15,10 @@ variable "vault_license" {
   description = "Vault License"
 }
 
-variable "aws_access_key_id" {
-  description = "AWS Access Key ID from Doormat"
-  type        = string
-}
-
-variable "aws_secret_access_key" {
-  description = "AWS Secret Access Key from Doormat"
-  type        = string
-}
-
-variable "aws_session_token" {
-  description = "AWS Session Token from Doormat"
-  type        = string
+variable "aws_credentials" {
+  description = "AWS Credentials Map (Access Key, Secret Key, Session Token)"
+  type        = map(string)
+  default     = {}
 }
 
 variable "primary_vault_common_name" {
