@@ -19,7 +19,7 @@ locals {
     app4-api          = "app4-api"
     app4-db           = "app4-db"
     app5              = "app5"
-    hostnaming-service = "hostnaming-service"
+    #hostnaming-service = "hostnaming-service"
   }
 }
 

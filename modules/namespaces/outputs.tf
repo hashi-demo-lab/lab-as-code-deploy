@@ -45,8 +45,7 @@ output "gitlab_namespace" {
   value       = kubernetes_namespace.namespace["gitlab"].metadata[0].name
 }
 
-output "hostnaming-service_namespace" {
-  description = "The namespace for Hostnaming Service"
-  value       = kubernetes_namespace.namespace["hostnaming-service"].metadata[0].name
-  
-}
+# output "hostnaming-service_namespace" {
+#   description = "The namespace for Hostnaming Service"
+#   value       = kubernetes_namespace.namespace["hostnaming-service"].metadata[0].name
+# }
