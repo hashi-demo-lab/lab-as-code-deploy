@@ -42,3 +42,5 @@ terraform.rc
 *.b64
 *.key
 *.crt
+
+work-in-progress/
