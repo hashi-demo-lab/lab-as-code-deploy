@@ -1,15 +1,15 @@
 terraform {
   required_providers {
     tls = {
-      source = "hashicorp/tls"
+      source  = "hashicorp/tls"
       version = "~> 4"
     }
     kubernetes = {
-      source = "hashicorp/kubernetes"
+      source  = "hashicorp/kubernetes"
       version = "~> 2"
     }
     onepassword = {
-      source = "1Password/onepassword"
+      source  = "1Password/onepassword"
       version = "~> 2"
     }
   }
