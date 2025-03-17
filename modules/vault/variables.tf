@@ -52,7 +52,7 @@ variable "vault_initialization_script" {
   type        = string
 }
 
-variable "auto_unseal_transit_config_script" {
+variable "auto_unseal_config_script" {
   description = "Optional script for configuring the transit secret engine for auto-unseal."
   type        = string
   default     = ""
