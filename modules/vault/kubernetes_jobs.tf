@@ -6,12 +6,12 @@ resource "kubernetes_config_map_v1" "vault_initialization_script" {
   data = { "vault-initialization.sh" = var.vault_initialization_script }
 }
 
-resource "kubernetes_config_map_v1" "auto_unseal_transit_config_script" {
+resource "kubernetes_config_map_v1" "auto_unseal_config_script" {
   metadata {
-    name      = "auto-unseal-transit-config-script"
+    name      = "auto-unseal-config-script"
     namespace = var.vault_namespace
   }
-  data = { "auto-unseal-transit-config.sh" = var.auto_unseal_transit_config_script }
+  data = { "auto_unseal_config.sh" = var.auto_unseal_config_script }
 }
 
 # Kubernetes job to initialize Vault
@@ -39,6 +39,10 @@ resource "kubernetes_job_v1" "vault_initialization" {
           env {
             name  = "VAULT_RELEASE_NAME"
             value = var.vault_release_name
+          }
+          env {
+            name = "VAULT_MODE"
+            value = var.vault_mode
           }
           volume_mount {
             name       = "vault-initialization-script"
@@ -81,20 +85,20 @@ resource "kubernetes_job_v1" "auto_unseal_transit_config" {
   depends_on = [kubernetes_job_v1.vault_initialization]
 
   metadata {
-    name      = "auto-unseal-transit-config-job"
+    name      = "auto-unseal-config-job"
     namespace = var.vault_namespace
   }
   spec {
     template {
       metadata {
-        labels = { app = "auto-unseal-transit-config" }
+        labels = { app = "auto-unseal-config" }
       }
       spec {
         restart_policy = "Never"
         container {
-          name    = "auto-unseal-transit-config"
+          name    = "auto-unseal-config"  # Changed: no underscores
           image   = "hashicorp/vault:latest"
-          command = ["/bin/sh", "/auto-unseal-transit-config/auto-unseal-transit-config.sh"]
+          command = ["/bin/sh", "/auto-unseal-config/auto_unseal_config.sh"]
           env {
             name  = "VAULT_CACERT"
             value = "/vault/tls/ca.crt"
@@ -112,8 +116,8 @@ resource "kubernetes_job_v1" "auto_unseal_transit_config" {
             value = var.auto_unseal_key_name
           }
           volume_mount {
-            name       = "auto-unseal-transit-config-script"
-            mount_path = "/auto-unseal-transit-config"
+            name       = "auto-unseal-config-script"  # Changed: underscores -> hyphens
+            mount_path = "/auto-unseal-config"
             read_only  = true
           }
           volume_mount {
@@ -123,12 +127,12 @@ resource "kubernetes_job_v1" "auto_unseal_transit_config" {
           }
         }
         volume {
-          name = "auto-unseal-transit-config-script"
+          name = "auto-unseal-config-script"  # Changed: underscores -> hyphens
           config_map {
-            name = kubernetes_config_map_v1.auto_unseal_transit_config_script.metadata[0].name
+            name = kubernetes_config_map_v1.auto_unseal_config_script.metadata[0].name
             items {
-              key  = "auto-unseal-transit-config.sh"
-              path = "auto-unseal-transit-config.sh"
+              key  = "auto_unseal_config.sh"
+              path = "auto_unseal_config.sh"
             }
           }
         }
@@ -146,4 +150,3 @@ resource "kubernetes_job_v1" "auto_unseal_transit_config" {
     }
   }
 }
-
