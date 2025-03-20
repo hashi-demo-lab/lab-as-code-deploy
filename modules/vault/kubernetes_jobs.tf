@@ -17,6 +17,7 @@ resource "kubernetes_config_map_v1" "auto_unseal_config_script" {
 # Kubernetes job to initialize Vault
 resource "kubernetes_job_v1" "vault_initialization" {
   depends_on = [kubernetes_role_binding_v1.vault_init_role_binding, helm_release.vault]
+  wait_for_completion = true
   metadata {
     generate_name = "vault-initialization-${var.vault_namespace}"
     namespace     = var.vault_namespace
@@ -83,7 +84,7 @@ resource "kubernetes_job_v1" "vault_initialization" {
 resource "kubernetes_job_v1" "auto_unseal_transit_config" {
   count = var.vault_mode == "auto_unseal" ? 1 : 0
   depends_on = [kubernetes_job_v1.vault_initialization]
-
+  wait_for_completion = true
   metadata {
     name      = "auto-unseal-config-job"
     namespace = var.vault_namespace
