@@ -7,6 +7,11 @@ vault operator unseal "$(kubectl get secret vault-init-credentials \
 # Restart Primary Vault
 kubectl rollout restart statefulset vault -n primary-vault
 
+#unset
+unset VAULT_TOKEN
+rm -f ~/.vault-token
+
+
 # Log into Primary Vault with Root Token
 export VAULT_ADDR=https://vault.hashibank.com:443
 vault login "$(kubectl get secret vault-init-credentials \
