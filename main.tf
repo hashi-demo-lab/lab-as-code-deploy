@@ -130,32 +130,32 @@ module "primary_vault" {
 # }
 
 
-# module "ldap_cert" {
-#   source                = "github.com/hashi-demo-lab/terraform-cert-creation.git?ref=main"
-#   ca_private_key_pem    = data.local_file.root_ca_key.content
-#   ca_cert_pem           = data.local_file.root_ca_cert.content
-#   common_name           = var.ldap_common_name
-#   dns_names             = var.ldap_dns_names
-#   organization          = var.organization
-#   is_ca_certificate     = false
-#   validity_period_hours = 8760
-#   cert_file_name        = "ldap.crt"
-#   key_file_name         = "ldap.key"
-#   save_to_file          = true
-# }
+module "ldap_cert" {
+  source                = "github.com/hashi-demo-lab/terraform-cert-creation.git?ref=main"
+  ca_private_key_pem    = data.local_file.root_ca_key.content
+  ca_cert_pem           = data.local_file.root_ca_cert.content
+  common_name           = var.ldap_common_name
+  dns_names             = var.ldap_dns_names
+  organization          = var.organization
+  is_ca_certificate     = false
+  validity_period_hours = 8760
+  cert_file_name        = "ldap.crt"
+  key_file_name         = "ldap.key"
+  save_to_file          = true
+}
 
-# module "ldap" {
-#   source               = "./modules/ldap"
-#   ldap_namespace       = module.namespaces.ldap_namespace
-#   ldap_cert_pem        = module.ldap_cert.cert_pem
-#   ldap_private_key_pem = module.ldap_cert.private_key_pem
-#   ca_cert_pem          = data.local_file.root_ca_key.content
-#   openldap_statefulset = local.openldap_statefulset
-#   openldap_service     = local.openldap_service
-#   phpldapadmin_service = local.phpldapadmin_service
-#   openldap_ingress     = local.openldap_ingress
-#   ldap_ldif_data       = local.ldap_ldif_data
-# }
+module "ldap" {
+  source               = "./modules/ldap"
+  ldap_namespace       = module.namespaces.ldap_namespace
+  ldap_cert_pem        = module.ldap_cert.cert_pem
+  ldap_private_key_pem = module.ldap_cert.private_key_pem
+  ca_cert_pem          = data.local_file.root_ca_key.content
+  openldap_statefulset = local.openldap_statefulset
+  openldap_service     = local.openldap_service
+  phpldapadmin_service = local.phpldapadmin_service
+  openldap_ingress     = local.openldap_ingress
+  ldap_ldif_data       = local.ldap_ldif_data
+}
 
 # module "gitlab_runner" {
 #   source = "./modules/gitlab_runner"
