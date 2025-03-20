@@ -77,27 +77,27 @@ module "primary_vault" {
   aws_credentials             = var.aws_credentials
 }
 
-data "onepassword_vault" "vault_lab" {
-  name = "Vault Lab"
-}
+# data "onepassword_vault" "vault_lab" {
+#   name = "Vault Lab"
+# }
 
-resource "onepassword_item" "primary_vault_root_token" {
-  vault    = data.onepassword_vault.vault_lab.uuid
-  title    = "HashiCorp Vault Lab Root Token"
-  category = "login"
-  url      = "https://vault.hashibank.com/"
-  username = "token"
-  password = module.primary_vault.root_token
-}
+# resource "onepassword_item" "primary_vault_root_token" {
+#   vault    = data.onepassword_vault.vault_lab.uuid
+#   title    = "HashiCorp Vault Lab Root Token"
+#   category = "login"
+#   url      = "https://vault.hashibank.com/"
+#   username = "token"
+#   password = module.primary_vault.root_token
+# }
 
-resource "onepassword_item" "auto_unseal_vault_root_token" {
-  vault    = data.onepassword_vault.vault_lab.uuid
-  title    = "HashiCorp Vault (auto_unseal_vault) Lab Root Token"
-  category = "login"
-  url      = "https://auto-unseal-vault.hashibank.com/"
-  username = "token"
-  password = module.auto_unseal_vault.root_token
-}
+# resource "onepassword_item" "auto_unseal_vault_root_token" {
+#   vault    = data.onepassword_vault.vault_lab.uuid
+#   title    = "HashiCorp Vault (auto_unseal_vault) Lab Root Token"
+#   category = "login"
+#   url      = "https://auto-unseal-vault.hashibank.com/"
+#   username = "token"
+#   password = module.auto_unseal_vault.root_token
+# }
 
 # module "monitoring" {
 #   source                   = "./modules/monitoring"
