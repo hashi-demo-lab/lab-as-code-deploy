@@ -8,6 +8,28 @@ This setup provisions a secure infrastructure on Kubernetes using Vault to authe
 - **Helm**: For deploying Vault, Prometheus, Grafana, and other services.
 - **Vault**: Deployed via Helm within Kubernetes.
 
+# Architecture Diagram
+
+~~~mermaid
+graph TD
+  A[lab-as-code-root-ca Repo]
+  B[Root CA Certificate & Key]
+  C[Client Certificate & Key]
+  D[../certificates/ Folder]
+  E[lab-as-code-deploy Repo]
+  F[Vault Cluster Certificates]
+
+  A --> B
+  A --> C
+  B --> D
+  C --> D
+  D --> E
+  E --> F
+  B -->|Signs| F
+~~~
+
+---
+
 ## Components
 
 ### 1. **Kubernetes Namespaces**
