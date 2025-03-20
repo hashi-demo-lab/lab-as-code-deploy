@@ -12,20 +12,53 @@ This setup provisions a secure infrastructure on Kubernetes using Vault to authe
 
 ~~~mermaid
 graph TD
-  A[lab-as-code-root-ca Repo]
-  B[Root CA Certificate & Key]
-  C[Client Certificate & Key]
-  D[../certificates/ Folder]
-  E[lab-as-code-deploy Repo]
-  F[Vault Cluster Certificates]
+    RC[Root CA Certificate]
+    RK[Root CA Key]
+    
+    subgraph "nginx namespace"
+      IN[Ingress Nginx Module]
+    end
+    
+    subgraph "auto-unseal-vault namespace"
+      AUC[Auto Unseal Vault Cert Module]
+      AUV[Auto Unseal Vault Module]
+    end
+    
+    subgraph "primary-vault namespace"
+      PVC[Primary Vault Cert Module]
+      PV[Primary Vault Module]
+    end
+    
+    subgraph "ldap namespace"
+      LC[LDAP Cert Module]
+      LDAP[LDAP Module]
+    end
+    
+    %% Ingress flow
+    RC --> IN
+    
+    %% Auto-unseal vault flow
+    RK --> AUC
+    RC --> AUC
+    AUC --> AUV
+    RC --> AUV
+    
+    %% Primary vault flow
+    RK --> PVC
+    RC --> PVC
+    PVC --> PV
+    RC --> PV
+    
+    %% LDAP flow
+    RK --> LC
+    RC --> LC
+    LC --> LDAP
+    RC --> LDAP
+    
+    %% OnePassword tokens
+    AUV --> OP2[OnePassword: Auto Unseal Vault Root Token]
+    PV  --> OP1[OnePassword: Primary Vault Root Token]
 
-  A --> B
-  A --> C
-  B --> D
-  C --> D
-  D --> E
-  E --> F
-  B -->|Signs| F
 ~~~
 
 ---
