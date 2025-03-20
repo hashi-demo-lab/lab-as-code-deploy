@@ -12,53 +12,39 @@ This setup provisions a secure infrastructure on Kubernetes using Vault to authe
 
 ~~~mermaid
 graph TD
-    RC[Root CA Certificate]
-    RK[Root CA Key]
+    ROOT["lab-as-code-root-ca (dependency)"]
     
     subgraph "nginx namespace"
-      IN[Ingress Nginx Module]
+      IN["Ingress Nginx Module"]
     end
     
     subgraph "auto-unseal-vault namespace"
-      AUC[Auto Unseal Vault Cert Module]
-      AUV[Auto Unseal Vault Module]
+      AUC["Auto Unseal Vault Cert Module"]
+      AUV["Auto Unseal Vault Module"]
     end
     
     subgraph "primary-vault namespace"
-      PVC[Primary Vault Cert Module]
-      PV[Primary Vault Module]
+      PVC["Primary Vault Cert Module"]
+      PV["Primary Vault Module"]
     end
     
     subgraph "ldap namespace"
-      LC[LDAP Cert Module]
-      LDAP[LDAP Module]
+      LC["LDAP Cert Module"]
+      LDAP["LDAP Module"]
     end
     
-    %% Ingress flow
-    RC --> IN
-    
-    %% Auto-unseal vault flow
-    RK --> AUC
-    RC --> AUC
-    AUC --> AUV
-    RC --> AUV
-    
-    %% Primary vault flow
-    RK --> PVC
-    RC --> PVC
-    PVC --> PV
-    RC --> PV
-    
-    %% LDAP flow
-    RK --> LC
-    RC --> LC
-    LC --> LDAP
-    RC --> LDAP
+    %% Dependency from lab-as-code-root-ca to each module
+    ROOT --> IN
+    ROOT --> AUC
+    ROOT --> AUV
+    ROOT --> PVC
+    ROOT --> PV
+    ROOT --> LC
+    ROOT --> LDAP
     
     %% OnePassword tokens
-    AUV --> OP2[OnePassword: Auto Unseal Vault Root Token]
-    PV  --> OP1[OnePassword: Primary Vault Root Token]
-
+    AUV --> OP2["OnePassword: Auto Unseal Vault Root Token"]
+    PV  --> OP1["OnePassword: Primary Vault Root Token"]
 ~~~
 
 ---
