@@ -18,3 +18,31 @@ vault operator raft list-peers
 vault operator raft autopilot state
 vault read sys/replication/status
 
+
+
+export VAULT_ADDR=https://vault-0.vault-internal:8200
+
+
+
+kubectl exec -n primary-vault -it vault-2 -- sh
+
+export VAULT_TOKEN=xx
+export VAULT_ADDR=https://vault-2.vault-internal:8200
+export TLS_SKIP_VERIFY=true
+vault login -tls-skip-verify $VAULT_TOKEN
+
+
+kubectl exec -n primary-vault -it vault-0 -- sh
+
+export VAULT_TOKEN=xx
+export VAULT_ADDR=https://vault-0.vault-internal:8200
+export TLS_SKIP_VERIFY=true
+vault login -tls-skip-verify $VAULT_TOKEN
+
+
+kubectl exec -n primary-vault  -it vault-1 -- sh
+
+export VAULT_TOKEN=xx
+export VAULT_ADDR=https://vault-1.vault-internal:8200
+export TLS_SKIP_VERIFY=true
+vault login -tls-skip-verify $VAULT_TOKEN
