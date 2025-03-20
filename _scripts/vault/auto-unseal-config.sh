@@ -58,28 +58,28 @@ EOF
 
 # --- New Section: Enable and Configure Kubernetes Auth Method ---
 
-echo "Enabling Kubernetes auth method..."
-vault auth enable kubernetes || echo "Kubernetes auth method already enabled"
+# echo "Enabling Kubernetes auth method..."
+# vault auth enable kubernetes || echo "Kubernetes auth method already enabled"
 
-echo "Configuring Kubernetes auth method..."
-vault write auth/kubernetes/config \
-  kubernetes_host="https://kubernetes.docker.internal:6443" \
-  kubernetes_ca_cert=@/var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+# echo "Configuring Kubernetes auth method..."
+# vault write auth/kubernetes/config \
+#   kubernetes_host="https://kubernetes.docker.internal:6443" \
+#   kubernetes_ca_cert=@/var/run/secrets/kubernetes.io/serviceaccount/ca.crt
 
-echo "Creating Kubernetes auth role 'auto-unseal'..."
-vault write auth/kubernetes/role/auto-unseal \
-  bound_service_account_names="*" \
-  bound_service_account_namespaces="primary-vault" \
-  token_policies="autounseal" \
-  ttl="24h"
+# echo "Creating Kubernetes auth role 'auto-unseal'..."
+# vault write auth/kubernetes/role/auto-unseal \
+#   bound_service_account_names="*" \
+#   bound_service_account_namespaces="primary-vault" \
+#   token_policies="autounseal" \
+#   ttl="24h"
 
-echo "Enabling KV v2 secrets engine at path 'secret'..."
-vault secrets enable -path=secret kv-v2 || echo "KV v2 secrets engine already enabled"
+# echo "Enabling KV v2 secrets engine at path 'secret'..."
+# vault secrets enable -path=secret kv-v2 || echo "KV v2 secrets engine already enabled"
 
-echo "Writing test secret to secret/data/demo..."
-vault kv put secret/demo username="demo-user" password="demo-password"
+# echo "Writing test secret to secret/data/demo..."
+# vault kv put secret/demo username="demo-user" password="demo-password"
 
-echo "Test KV secret 'secret/demo' configured."
+# echo "Test KV secret 'secret/demo' configured."
 
 
 echo "Auto-unseal vault cluster configuration complete."
