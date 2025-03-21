@@ -143,18 +143,18 @@ module "ldap_cert" {
   save_to_file          = true
 }
 
-# module "ldap" {
-#   source               = "./modules/ldap"
-#   ldap_namespace       = module.namespaces.ldap_namespace
-#   ldap_cert_pem        = module.ldap_cert.cert_pem
-#   ldap_private_key_pem = module.ldap_cert.private_key_pem
-#   ca_cert_pem          = data.local_file.root_ca_key.content
-#   openldap_statefulset = local.openldap_statefulset
-#   openldap_service     = local.openldap_service
-#   phpldapadmin_service = local.phpldapadmin_service
-#   openldap_ingress     = local.openldap_ingress
-#   ldap_ldif_data       = local.ldap_ldif_data
-# }
+module "ldap" {
+  source               = "./modules/ldap"
+  ldap_namespace       = module.namespaces.ldap_namespace
+  ca_cert_pem          = data.local_file.root_ca_cert.content
+  ldap_cert_pem        = module.ldap_cert.cert_pem
+  ldap_private_key_pem = module.ldap_cert.private_key_pem
+  openldap_statefulset = local.openldap_statefulset
+  openldap_service     = local.openldap_service
+  phpldapadmin_service = local.phpldapadmin_service
+  openldap_ingress     = local.openldap_ingress
+  ldap_ldif_data       = local.ldap_ldif_data
+}
 
 # module "gitlab_runner" {
 #   source = "./modules/gitlab_runner"
