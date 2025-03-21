@@ -1,5 +1,4 @@
-# # main.tf
-
+# main.tf
 module "namespaces" {
   source = "./modules/namespaces"
 }
@@ -19,8 +18,8 @@ module "auto_unseal_vault_cert" {
   organization          = var.organization
   is_ca_certificate     = false
   validity_period_hours = 8760
-  cert_file_name        = "${path.root}/../certificates/auto_unseal_vault.crt"
-  key_file_name         = "${path.root}/../certificates/auto_unseal_vault.key"
+  cert_file_name        = "${path.root}/../${var.certificates_directory}/auto_unseal_vault.crt"
+  key_file_name         = "${path.root}/../${var.certificates_directory}/auto_unseal_vault.key"
   save_to_file          = true
 }
 
@@ -53,8 +52,8 @@ module "primary_vault_cert" {
   organization          = var.organization
   is_ca_certificate     = false
   validity_period_hours = 8760
-  cert_file_name        = "${path.root}/../certificates/vault.crt"
-  key_file_name         = "${path.root}/../certificates/vault.key"
+  cert_file_name        = "${path.root}/../${var.certificates_directory}/vault.crt"
+  key_file_name         = "${path.root}/../${var.certificates_directory}/vault.key"
   save_to_file          = true
 }
 
@@ -69,7 +68,7 @@ module "primary_vault" {
   vault_dns_names             = var.primary_vault_dns_names
   vault_common_name           = var.primary_vault_common_name
   vault_license               = var.vault_license
-  vso_helm                    = local.vso_helm_values
+  #vso_helm                    = local.vso_helm_values
   vault_initialization_script = local.intialise_vault_script
   configure_seal              = true
   vault_mode                  = "primary"
@@ -77,27 +76,27 @@ module "primary_vault" {
   aws_credentials             = var.aws_credentials
 }
 
-# data "onepassword_vault" "vault_lab" {
-#   name = "Vault Lab"
-# }
+data "onepassword_vault" "vault_lab" {
+  name = "Vault Lab"
+}
 
-# resource "onepassword_item" "primary_vault_root_token" {
-#   vault    = data.onepassword_vault.vault_lab.uuid
-#   title    = "HashiCorp Vault Lab Root Token"
-#   category = "login"
-#   url      = "https://vault.hashibank.com/"
-#   username = "token"
-#   password = module.primary_vault.root_token
-# }
+resource "onepassword_item" "primary_vault_root_token" {
+  vault    = data.onepassword_vault.vault_lab.uuid
+  title    = "HashiCorp Vault Lab Root Token"
+  category = "login"
+  url      = "https://vault.hashibank.com/"
+  username = "token"
+  password = module.primary_vault.root_token
+}
 
-# resource "onepassword_item" "auto_unseal_vault_root_token" {
-#   vault    = data.onepassword_vault.vault_lab.uuid
-#   title    = "HashiCorp Vault (auto_unseal_vault) Lab Root Token"
-#   category = "login"
-#   url      = "https://auto-unseal-vault.hashibank.com/"
-#   username = "token"
-#   password = module.auto_unseal_vault.root_token
-# }
+resource "onepassword_item" "auto_unseal_vault_root_token" {
+  vault    = data.onepassword_vault.vault_lab.uuid
+  title    = "HashiCorp Vault (auto_unseal_vault) Lab Root Token"
+  category = "login"
+  url      = "https://auto-unseal-vault.hashibank.com/"
+  username = "token"
+  password = module.auto_unseal_vault.root_token
+}
 
 # module "monitoring" {
 #   source                   = "./modules/monitoring"
@@ -139,23 +138,23 @@ module "ldap_cert" {
   organization          = var.organization
   is_ca_certificate     = false
   validity_period_hours = 8760
-  cert_file_name        = "ldap.crt"
-  key_file_name         = "ldap.key"
+  cert_file_name        = "${path.root}/../${var.certificates_directory}/ldap.crt"
+  key_file_name         = "${path.root}/../${var.certificates_directory}/ldap.key"
   save_to_file          = true
 }
 
-module "ldap" {
-  source               = "./modules/ldap"
-  ldap_namespace       = module.namespaces.ldap_namespace
-  ldap_cert_pem        = module.ldap_cert.cert_pem
-  ldap_private_key_pem = module.ldap_cert.private_key_pem
-  ca_cert_pem          = data.local_file.root_ca_key.content
-  openldap_statefulset = local.openldap_statefulset
-  openldap_service     = local.openldap_service
-  phpldapadmin_service = local.phpldapadmin_service
-  openldap_ingress     = local.openldap_ingress
-  ldap_ldif_data       = local.ldap_ldif_data
-}
+# module "ldap" {
+#   source               = "./modules/ldap"
+#   ldap_namespace       = module.namespaces.ldap_namespace
+#   ldap_cert_pem        = module.ldap_cert.cert_pem
+#   ldap_private_key_pem = module.ldap_cert.private_key_pem
+#   ca_cert_pem          = data.local_file.root_ca_key.content
+#   openldap_statefulset = local.openldap_statefulset
+#   openldap_service     = local.openldap_service
+#   phpldapadmin_service = local.phpldapadmin_service
+#   openldap_ingress     = local.openldap_ingress
+#   ldap_ldif_data       = local.ldap_ldif_data
+# }
 
 # module "gitlab_runner" {
 #   source = "./modules/gitlab_runner"

@@ -10,6 +10,12 @@ variable "kube_config_context" {
   default     = "docker-desktop"
 }
 
+variable "certificates_directory" {
+  description = "Directory where certificate files will be stored"
+  type        = string
+  default     = "certificates"
+}
+
 variable "vault_license" {
   type        = string
   description = "Vault License"
