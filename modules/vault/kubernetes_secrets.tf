@@ -39,6 +39,15 @@ resource "kubernetes_secret_v1" "aws_credentials" {
   type = "Opaque"
 }
 
+data "kubernetes_secret" "vault_init_credentials" {
+  depends_on = [kubernetes_job_v1.vault_initialization]
+  metadata {
+    name      = "vault-init-credentials"
+    namespace = var.vault_namespace
+  }
+
+}
+
 data "kubernetes_secret" "auto_unseal_token" {
   count = var.vault_mode == "primary" ? 1 : 0
 
@@ -48,10 +57,3 @@ data "kubernetes_secret" "auto_unseal_token" {
   }
 }
 
-data "kubernetes_secret" "vault_init_credentials" {
-  depends_on = [kubernetes_job_v1.vault_initialization]
-  metadata {
-    name      = "vault-init-credentials"
-    namespace = var.vault_namespace
-  }
-}
