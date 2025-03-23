@@ -16,7 +16,7 @@ resource "kubernetes_config_map_v1" "auto_unseal_config_script" {
 
 # Kubernetes job to initialize Vault
 resource "kubernetes_job_v1" "vault_initialization" {
-  depends_on = [kubernetes_role_binding_v1.vault_init_role_binding, helm_release.vault]
+  depends_on          = [helm_release.vault, kubernetes_role_binding_v1.vault_init_role_binding]
   wait_for_completion = true
   metadata {
     generate_name = "vault-initialization-${var.vault_namespace}"
@@ -42,7 +42,7 @@ resource "kubernetes_job_v1" "vault_initialization" {
             value = var.vault_release_name
           }
           env {
-            name = "VAULT_MODE"
+            name  = "VAULT_MODE"
             value = var.vault_mode
           }
           volume_mount {
@@ -82,8 +82,8 @@ resource "kubernetes_job_v1" "vault_initialization" {
 }
 
 resource "kubernetes_job_v1" "auto_unseal_transit_config" {
-  count = var.vault_mode == "auto_unseal" ? 1 : 0
-  depends_on = [kubernetes_job_v1.vault_initialization]
+  count               = var.vault_mode == "auto_unseal" ? 1 : 0
+  depends_on          = [kubernetes_job_v1.vault_initialization]
   wait_for_completion = true
   metadata {
     name      = "auto-unseal-config-job"
@@ -97,7 +97,7 @@ resource "kubernetes_job_v1" "auto_unseal_transit_config" {
       spec {
         restart_policy = "Never"
         container {
-          name    = "auto-unseal-config"  # Changed: no underscores
+          name    = "auto-unseal-config" # Changed: no underscores
           image   = "hashicorp/vault:latest"
           command = ["/bin/sh", "/auto-unseal-config/auto_unseal_config.sh"]
           env {
@@ -117,7 +117,7 @@ resource "kubernetes_job_v1" "auto_unseal_transit_config" {
             value = var.auto_unseal_key_name
           }
           volume_mount {
-            name       = "auto-unseal-config-script"  # Changed: underscores -> hyphens
+            name       = "auto-unseal-config-script" # Changed: underscores -> hyphens
             mount_path = "/auto-unseal-config"
             read_only  = true
           }
@@ -128,7 +128,7 @@ resource "kubernetes_job_v1" "auto_unseal_transit_config" {
           }
         }
         volume {
-          name = "auto-unseal-config-script"  # Changed: underscores -> hyphens
+          name = "auto-unseal-config-script" # Changed: underscores -> hyphens
           config_map {
             name = kubernetes_config_map_v1.auto_unseal_config_script.metadata[0].name
             items {
