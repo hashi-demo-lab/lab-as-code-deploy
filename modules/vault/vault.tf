@@ -4,7 +4,7 @@ locals {
   # Only assign auto-unseal values if configure_seal is enabled
   auto_unseal_addr     = var.configure_seal ? var.auto_unseal_addr : ""
   auto_unseal_key_name = var.configure_seal ? var.auto_unseal_key_name : ""
-  auto_unseal_token = local.is_primary && var.configure_seal ? try(data.kubernetes_secret.auto_unseal_token[0].data["token"], "") : ""
+  auto_unseal_token    = local.is_primary && var.configure_seal ? try(data.kubernetes_secret.auto_unseal_token[0].data["token"], "") : ""
 
   vault_helm_values = templatefile("${path.module}/vault_helm.tftpl", {
     namespace                   = var.vault_namespace
@@ -21,6 +21,15 @@ locals {
   })
 }
 
+resource "kubernetes_config_map_v1" "vault_log_collector_config" {
+  metadata {
+    name      = "vault-log-collector-config"
+    namespace = var.vault_namespace
+  }
+  data = {
+    "alloy.yaml" = var.vault_audit_sidecar_config
+  }
+}
 
 resource "helm_release" "vault" {
   depends_on = [
