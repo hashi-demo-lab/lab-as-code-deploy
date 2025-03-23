@@ -1,0 +1,17 @@
+logging {
+  level  = "info"
+  format = "logfmt"
+}
+
+loki.source.file "vault_audit" {
+  targets = [
+    { "__path__" = "/vault/audit/vault_audit.log", "job" = "vault_audit" },
+  ]
+  forward_to = [loki.write.default.receiver]
+}
+
+loki.write "default" {
+  endpoint {
+    url = "http://loki.grafana.svc.cluster.local:3100/loki/api/v1/push"
+  }
+}
