@@ -124,33 +124,24 @@ resource "helm_release" "grafana" {
   }
 }
 
-# resource "kubernetes_config_map_v1" "grafana_loki_datasource" {
-#   metadata {
-#     name      = "grafana-loki-datasource"
-#     namespace = var.grafana_namespace
-#   }
+resource "kubernetes_config_map_v1" "grafana_loki_datasource" {
+  metadata {
+    name      = "grafana-loki-datasource"
+    namespace = var.grafana_namespace
+  }
 
-#   data = {
-#     "datasources.yaml" = var.grafana_loki_config
-#   }
-# }
+  data = {
+    "datasources.yaml" = var.grafana_loki_config
+  }
+}
 
-# resource "helm_release" "loki" {
-#   name       = "loki"
-#   repository = "https://grafana.github.io/helm-charts"
-#   chart      = "loki"
-#   namespace  = var.prometheus_namespace
-#   version    = var.loki_helm_version
+resource "helm_release" "loki" {
+  name       = "loki"
+  repository = "https://grafana.github.io/helm-charts"
+  chart      = "loki"
+  namespace  = var.grafana_namespace
+  version    = var.loki_helm_version
 
-#   values = [var.loki_helm_values]
-# }
+  values = [var.grafana_loki_helm_values]
+}
 
-# resource "helm_release" "promtail" {
-#   name       = "promtail"
-#   repository = "https://grafana.github.io/helm-charts"
-#   chart      = "promtail"
-#   namespace  = var.prometheus_namespace
-#   version    = var.promtail_helm_version
-
-#   values = [var.promtail_helm_values]
-# }
