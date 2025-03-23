@@ -43,6 +43,7 @@ variable "ca_cert_pem" {
 variable "vault_root_token" {
   description = "Vault root token used by Prometheus and Grafana"
   type        = string
+  default = ""
 }
 
 variable "prometheus_helm_version" {
@@ -60,18 +61,8 @@ variable "loki_helm_version" {
   type        = string
 }
 
-variable "loki_helm_values" {
+variable "grafana_loki_helm_values" {
   description = "Content of Loki Helm values YAML file"
-  type        = string
-}
-
-variable "promtail_helm_version" {
-  description = "Promtail Helm chart version"
-  type        = string
-}
-
-variable "promtail_helm_values" {
-  description = "Content of Promtail Helm values YAML file"
   type        = string
 }
 
