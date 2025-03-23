@@ -39,6 +39,8 @@ else
     
     export VAULT_TOKEN=$root_token
     vault audit enable file file_path=/vault/audit/vault_audit.log log_raw=true
+    chmod g+r vault_audit.log
+
   else
     echo "Initializing Vault for the first time (auto-unseal with recovery keys)..."
     init_output=$(vault operator init -recovery-shares=1 -recovery-threshold=1 -format=json)
@@ -46,6 +48,7 @@ else
     
     export VAULT_TOKEN=$root_token
     vault audit enable file file_path=/vault/audit/vault_audit.log log_raw=true
+    chmod g+r vault_audit.log
   fi
 fi
 
