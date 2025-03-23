@@ -28,10 +28,12 @@ datasources:
       type: loki
       access: proxy
       orgId: 1
-      url: http://loki.prometheus.svc.cluster.local:3100
+      url: http://loki.grafana.svc.cluster.local:3100
       isDefault: false
       jsonData:
         maxLines: 1000
+        queryLanguage: "LogQL"
+        healthCheckQuery: '{job="vault_audit"}'
     - name: prometheus
       type: prometheus
       access: server
