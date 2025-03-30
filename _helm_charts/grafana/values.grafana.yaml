@@ -49,7 +49,7 @@ datasources:
       type: "yesoreyeram-infinity-datasource"
       url: "__IGNORE_URL__"
       basicAuth: false
-      isDefault: true
+      isDefault: false
       jsonData:
         allowedHosts:
           - "https://vault.primary-vault.svc.cluster.local"
