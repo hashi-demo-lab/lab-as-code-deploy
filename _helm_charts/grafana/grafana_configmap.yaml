@@ -22,7 +22,7 @@
   orgId: 1
   url: "__IGNORE_URL__"
   basicAuth: false
-  isDefault: true
+  isDefault: false
   jsonData:
     allowedHosts:
       - "https://vault-active.primary-vault.svc.cluster.local"
