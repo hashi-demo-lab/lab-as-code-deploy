@@ -28,6 +28,17 @@ variable "vault_helm_version" {
   type        = string
   default     = "~> 0"
 }
+variable "cluster_type" {
+  description = "Type of the Vault cluster (e.g. auto-unseal-vault or primary-vault)"
+  type        = string
+  default = ""
+}
+
+variable "pod_name" {
+  description = "The name to label the pod (for static deployments, or a placeholder)"
+  type        = string
+  default = ""
+}
 
 # -------------------------------
 # Vault High Availability (HA)
@@ -129,6 +140,11 @@ variable "enable_service_registration" {
   default     = true
 }
 
+variable "vault_audit_sidecar_config" {
+  description = "Content of the Vault Audit Sidecar Collector configuration YAML"
+  type        = string
+}
+
 # -------------------------------
 # AWS Credentials (Optional)
 # -------------------------------
@@ -137,3 +153,4 @@ variable "aws_credentials" {
   type        = map(string)
   default     = {}
 }
+
