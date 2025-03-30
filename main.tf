@@ -41,6 +41,7 @@ module "auto_unseal_vault" {
   configure_seal              = false
   vault_mode                  = "auto_unseal"
   enable_service_registration = false #Non HA mode does not require service registration
+  vault_audit_sidecar_config  = local.grafana_alloy_configmap
 }
 
 module "primary_vault_cert" {
@@ -58,22 +59,23 @@ module "primary_vault_cert" {
 }
 
 module "primary_vault" {
-  source                      = "./modules/vault"
-  depends_on                  = [module.auto_unseal_vault]
-  vault_namespace             = module.namespaces.primary_vault_namespace
-  ca_cert_pem                 = data.local_file.root_ca_cert.content
-  vault_cert_pem              = module.primary_vault_cert.cert_pem
-  vault_private_key_pem       = module.primary_vault_cert.private_key_pem
-  organization                = var.organization
-  vault_dns_names             = var.primary_vault_dns_names
-  vault_common_name           = var.primary_vault_common_name
-  vault_license               = var.vault_license
+  source                = "./modules/vault"
+  depends_on            = [module.auto_unseal_vault]
+  vault_namespace       = module.namespaces.primary_vault_namespace
+  ca_cert_pem           = data.local_file.root_ca_cert.content
+  vault_cert_pem        = module.primary_vault_cert.cert_pem
+  vault_private_key_pem = module.primary_vault_cert.private_key_pem
+  organization          = var.organization
+  vault_dns_names       = var.primary_vault_dns_names
+  vault_common_name     = var.primary_vault_common_name
+  vault_license         = var.vault_license
   #vso_helm                    = local.vso_helm_values
   vault_initialization_script = local.intialise_vault_script
   configure_seal              = true
   vault_mode                  = "primary"
   enable_service_registration = true
   aws_credentials             = var.aws_credentials
+  vault_audit_sidecar_config  = local.grafana_alloy_configmap
 }
 
 data "onepassword_vault" "vault_lab" {
@@ -98,25 +100,23 @@ resource "onepassword_item" "auto_unseal_vault_root_token" {
   password = module.auto_unseal_vault.root_token
 }
 
-# module "monitoring" {
-#   source                   = "./modules/monitoring"
-#   ca_cert_pem              = data.local_file.root_ca_cert.content
-#   prometheus_namespace     = module.namespaces.prometheus_namespace
-#   grafana_namespace        = module.namespaces.grafana_namespace
-#   prometheus_helm_version  = var.prometheus_helm_version
-#   grafana_helm_version     = var.grafana_helm_version
-#   loki_helm_version        = var.loki_helm_version
-#   promtail_helm_version    = var.promtail_helm_version
-#   prometheus_helm_values   = local.prometheus_helm_values # Loaded from a file
-#   grafana_helm_values      = local.grafana_helm_values    # Loaded from a file
-#   loki_helm_values         = local.loki_helm_values
-#   promtail_helm_values     = local.promtail_helm_values
-#   prometheus_scrape_config = local.prometheus_scrape_config # Loaded from a file
-#   grafana_configmap        = local.grafana_configmap
-#   grafana_dashboards       = local.grafana_vault_dashboard # Loaded from a file
-#   grafana_loki_config      = local.grafana_loki_config
-#   vault_root_token         = local.decoded_root_token
-# }
+module "monitoring" {
+  source                   = "./modules/monitoring"
+  ca_cert_pem              = data.local_file.root_ca_cert.content
+  prometheus_namespace     = module.namespaces.prometheus_namespace
+  grafana_namespace        = module.namespaces.grafana_namespace
+  prometheus_helm_version  = var.prometheus_helm_version
+  grafana_helm_version     = var.grafana_helm_version
+  loki_helm_version        = var.loki_helm_version
+  prometheus_helm_values   = local.prometheus_helm_values
+  grafana_helm_values      = local.grafana_helm_values
+  grafana_loki_helm_values = local.grafana_loki_helm_values
+  prometheus_scrape_config = local.prometheus_scrape_config
+  grafana_configmap        = local.grafana_configmap
+  grafana_dashboards       = local.grafana_vault_dashboard
+  grafana_loki_config      = local.grafana_loki_config
+  vault_root_token         = local.decoded_root_token
+}
 
 # module "neo4j" {
 #   source = "./modules/neo4j"
@@ -129,32 +129,32 @@ resource "onepassword_item" "auto_unseal_vault_root_token" {
 # }
 
 
-module "ldap_cert" {
-  source                = "github.com/hashi-demo-lab/terraform-cert-creation.git?ref=main"
-  ca_private_key_pem    = data.local_file.root_ca_key.content
-  ca_cert_pem           = data.local_file.root_ca_cert.content
-  common_name           = var.ldap_common_name
-  dns_names             = var.ldap_dns_names
-  organization          = var.organization
-  is_ca_certificate     = false
-  validity_period_hours = 8760
-  cert_file_name        = "${path.root}/../${var.certificates_directory}/ldap.crt"
-  key_file_name         = "${path.root}/../${var.certificates_directory}/ldap.key"
-  save_to_file          = true
-}
+# module "ldap_cert" {
+#   source                = "github.com/hashi-demo-lab/terraform-cert-creation.git?ref=main"
+#   ca_private_key_pem    = data.local_file.root_ca_key.content
+#   ca_cert_pem           = data.local_file.root_ca_cert.content
+#   common_name           = var.ldap_common_name
+#   dns_names             = var.ldap_dns_names
+#   organization          = var.organization
+#   is_ca_certificate     = false
+#   validity_period_hours = 8760
+#   cert_file_name        = "${path.root}/../${var.certificates_directory}/ldap.crt"
+#   key_file_name         = "${path.root}/../${var.certificates_directory}/ldap.key"
+#   save_to_file          = true
+# }
 
-module "ldap" {
-  source               = "./modules/ldap"
-  ldap_namespace       = module.namespaces.ldap_namespace
-  ca_cert_pem          = data.local_file.root_ca_cert.content
-  ldap_cert_pem        = module.ldap_cert.cert_pem
-  ldap_private_key_pem = module.ldap_cert.private_key_pem
-  openldap_statefulset = local.openldap_statefulset
-  openldap_service     = local.openldap_service
-  phpldapadmin_service = local.phpldapadmin_service
-  openldap_ingress     = local.openldap_ingress
-  ldap_ldif_data       = local.ldap_ldif_data
-}
+# module "ldap" {
+#   source               = "./modules/ldap"
+#   ldap_namespace       = module.namespaces.ldap_namespace
+#   ca_cert_pem          = data.local_file.root_ca_cert.content
+#   ldap_cert_pem        = module.ldap_cert.cert_pem
+#   ldap_private_key_pem = module.ldap_cert.private_key_pem
+#   openldap_statefulset = local.openldap_statefulset
+#   openldap_service     = local.openldap_service
+#   phpldapadmin_service = local.phpldapadmin_service
+#   openldap_ingress     = local.openldap_ingress
+#   ldap_ldif_data       = local.ldap_ldif_data
+# }
 
 # module "gitlab_runner" {
 #   source = "./modules/gitlab_runner"
