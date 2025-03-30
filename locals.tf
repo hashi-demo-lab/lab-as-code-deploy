@@ -17,18 +17,23 @@ locals {
   openldap_ingress          = file("${path.root}/_manifests/openldap/ingress.yaml")
   ldap_ldif_data            = file("${path.root}/_manifests/openldap/hashibank.ldif")
   hostname_manifest         = file("${path.root}/_manifests/hostnaming-service/hostname.yaml")
-  prometheus_scrape_config  = file("./_helm_charts/prometheus/configmap.yaml")
-  prometheus_helm_values    = file("./_helm_charts/prometheus/values.prometheus.yaml")
-  grafana_configmap         = file("./_helm_charts/grafana/configmap.yaml")
-  grafana_helm_values       = file("./_helm_charts/grafana/values.grafana.yaml")
-  grafana_vault_dashboard   = file("./_helm_charts/grafana/vault_dashboard.grafana.json")
-  loki_helm_values          = file("./_helm_charts/loki/values.loki.yaml")
-  promtail_helm_values      = file("./_helm_charts/promtail/values.promtail.yaml")
-  grafana_loki_config       = file("./_helm_charts/grafana/loki_datasource.yaml")
+
+  prometheus_scrape_config = file("./_helm_charts/prometheus/configmap.yaml")
+  prometheus_helm_values   = file("./_helm_charts/prometheus/values.prometheus.yaml")
+
+  grafana_helm_values     = file("./_helm_charts/grafana/values.grafana.yaml")
+  grafana_configmap       = file("./_helm_charts/grafana/grafana_configmap.yaml")
+  grafana_vault_dashboard = file("./_helm_charts/grafana/vault_dashboard.grafana.json")
+
+  grafana_loki_helm_values = file("./_helm_charts/grafana/values.loki.yaml")
+  grafana_loki_config      = file("./_helm_charts/grafana/loki_datasource.yaml")
+
+  grafana_alloy_configmap = file("./_helm_charts/grafana/grafana_alloy_configmap.yaml")
+
   neo4j_helm_values         = file("./_helm_charts/neo4j/values.neo4j.yaml")
   gitlab_runner_helm_values = file("./_helm_charts/gitlab_runner/values.yaml")
-  decoded_root_token        = module.primary_vault.root_token
 
+  decoded_root_token = module.primary_vault.root_token
 }
 
 # CA Private Key and Certificate used for signing Vault certificates
