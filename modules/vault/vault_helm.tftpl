@@ -49,8 +49,15 @@ server:
           mountPath: /vault/audit
         - name: vault-log-collector-config
           mountPath: /etc/agent
+      env:
+        - name: CLUSTER_TYPE
+          value: "${vault_mode}"
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
       securityContext:
-        runAsUser: 1000
+      runAsUser: 1000
   readinessProbe:
     enabled: true
     path: "/v1/sys/health?standbyok=true&perfstandbyok=true&sealedcode=200&uninitcode=200"
@@ -153,3 +160,7 @@ server:
           tls_skip_verify = true
         }
         %{ endif }
+  postStart:
+      - /bin/sh
+      - "-c"
+      - "chmod g+r /vault/audit/vault_audit.log || true"
