@@ -39,7 +39,6 @@ else
     
     export VAULT_TOKEN=$root_token
     vault audit enable file file_path=/vault/audit/vault_audit.log log_raw=true
-    chmod g+r vault_audit.log
 
   else
     echo "Initializing Vault for the first time (auto-unseal with recovery keys)..."
@@ -48,9 +47,9 @@ else
     
     export VAULT_TOKEN=$root_token
     vault audit enable file file_path=/vault/audit/vault_audit.log log_raw=true
-    chmod g+r vault_audit.log
   fi
 fi
+chmod g+r /vault/audit/vault_audit.log
 
 # For additional nodes, join the Raft cluster.
 if [ "$NUM_REPLICAS" -gt 1 ]; then
