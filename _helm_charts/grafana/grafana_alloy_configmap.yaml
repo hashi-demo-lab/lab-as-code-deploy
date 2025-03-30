@@ -1,11 +1,11 @@
 logging {
-  level  = "info"
+  level = "info"
   format = "logfmt"
 }
 
 loki.source.file "vault_audit" {
   targets = [
-    { "__path__" = "/vault/audit/vault_audit.log", "job" = "vault_audit" },
+    { __path__ = "/vault/audit/vault_audit.log", "job" = "vault_audit", "cluster" = sys.env("CLUSTER_TYPE"), "pod" = sys.env("POD_NAME") },
   ]
   forward_to = [loki.write.default.receiver]
 }
