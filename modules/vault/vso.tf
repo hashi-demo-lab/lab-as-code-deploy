@@ -2,10 +2,10 @@ resource "helm_release" "vault_secrets_operator" {
   count = var.vso_helm == null ? 0 : 1
 
   name       = "vault-secrets-operator"
-  repository = "https://helm.releases.hashicorp.com"
   chart      = "vault-secrets-operator"
+  repository = "https://helm.releases.hashicorp.com"
   namespace  = var.vault_namespace
-  version    = var.vault_helm_version
+  version    = "0.10.0"
 
   values = [var.vso_helm]
 }
