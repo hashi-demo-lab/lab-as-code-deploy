@@ -78,45 +78,32 @@ module "primary_vault" {
   vault_audit_sidecar_config  = local.grafana_alloy_configmap
 }
 
-data "onepassword_vault" "vault_lab" {
-  name = "Vault Lab"
+module "onepassword_items" {
+  source = "./modules/onepassword_items"
+  enabled = var.enable_onepassword_items
+
+  vault_lab_name = "Vault Lab"
+  primary_vault_root_token = module.primary_vault.root_token
+  auto_unseal_vault_root_token = module.auto_unseal_vault.root_token
 }
 
-resource "onepassword_item" "primary_vault_root_token" {
-  vault    = data.onepassword_vault.vault_lab.uuid
-  title    = "HashiCorp Vault Lab Root Token"
-  category = "login"
-  url      = "https://vault.hashibank.com/"
-  username = "token"
-  password = module.primary_vault.root_token
-}
-
-resource "onepassword_item" "auto_unseal_vault_root_token" {
-  vault    = data.onepassword_vault.vault_lab.uuid
-  title    = "HashiCorp Vault (auto_unseal_vault) Lab Root Token"
-  category = "login"
-  url      = "https://auto-unseal-vault.hashibank.com/"
-  username = "token"
-  password = module.auto_unseal_vault.root_token
-}
-
-module "monitoring" {
-  source                   = "./modules/monitoring"
-  ca_cert_pem              = data.local_file.root_ca_cert.content
-  prometheus_namespace     = module.namespaces.prometheus_namespace
-  grafana_namespace        = module.namespaces.grafana_namespace
-  prometheus_helm_version  = var.prometheus_helm_version
-  grafana_helm_version     = var.grafana_helm_version
-  loki_helm_version        = var.loki_helm_version
-  prometheus_helm_values   = local.prometheus_helm_values
-  grafana_helm_values      = local.grafana_helm_values
-  grafana_loki_helm_values = local.grafana_loki_helm_values
-  prometheus_scrape_config = local.prometheus_scrape_config
-  grafana_configmap        = local.grafana_configmap
-  grafana_dashboards       = local.grafana_vault_dashboard
-  grafana_loki_config      = local.grafana_loki_config
-  vault_root_token         = local.decoded_root_token
-}
+# module "monitoring" {
+#   source                   = "./modules/monitoring"
+#   ca_cert_pem              = data.local_file.root_ca_cert.content
+#   prometheus_namespace     = module.namespaces.prometheus_namespace
+#   grafana_namespace        = module.namespaces.grafana_namespace
+#   prometheus_helm_version  = var.prometheus_helm_version
+#   grafana_helm_version     = var.grafana_helm_version
+#   loki_helm_version        = var.loki_helm_version
+#   prometheus_helm_values   = local.prometheus_helm_values
+#   grafana_helm_values      = local.grafana_helm_values
+#   grafana_loki_helm_values = local.grafana_loki_helm_values
+#   prometheus_scrape_config = local.prometheus_scrape_config
+#   grafana_configmap        = local.grafana_configmap
+#   grafana_dashboards       = local.grafana_vault_dashboard
+#   grafana_loki_config      = local.grafana_loki_config
+#   vault_root_token         = local.decoded_root_token
+# }
 
 # module "neo4j" {
 #   source = "./modules/neo4j"

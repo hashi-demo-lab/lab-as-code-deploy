@@ -145,3 +145,8 @@ variable "gitlab_runner_token" {
 #   type        = string
 #   description = "value of the client_secret"
 # }
+variable "enable_onepassword_items" {
+  description = "Enable or disable the onepassword_items module"
+  type        = bool
+  default     = false
+}
