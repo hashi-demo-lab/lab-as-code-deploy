@@ -69,7 +69,7 @@ module "primary_vault" {
   vault_dns_names       = var.primary_vault_dns_names
   vault_common_name     = var.primary_vault_common_name
   vault_license         = var.vault_license
-  #vso_helm                    = local.vso_helm_values
+  vso_helm                    = local.vso_helm_values
   vault_initialization_script = local.intialise_vault_script
   configure_seal              = true
   vault_mode                  = "primary"
@@ -87,23 +87,23 @@ module "onepassword_items" {
   auto_unseal_vault_root_token = module.auto_unseal_vault.root_token
 }
 
-# module "monitoring" {
-#   source                   = "./modules/monitoring"
-#   ca_cert_pem              = data.local_file.root_ca_cert.content
-#   prometheus_namespace     = module.namespaces.prometheus_namespace
-#   grafana_namespace        = module.namespaces.grafana_namespace
-#   prometheus_helm_version  = var.prometheus_helm_version
-#   grafana_helm_version     = var.grafana_helm_version
-#   loki_helm_version        = var.loki_helm_version
-#   prometheus_helm_values   = local.prometheus_helm_values
-#   grafana_helm_values      = local.grafana_helm_values
-#   grafana_loki_helm_values = local.grafana_loki_helm_values
-#   prometheus_scrape_config = local.prometheus_scrape_config
-#   grafana_configmap        = local.grafana_configmap
-#   grafana_dashboards       = local.grafana_vault_dashboard
-#   grafana_loki_config      = local.grafana_loki_config
-#   vault_root_token         = local.decoded_root_token
-# }
+module "monitoring" {
+  source                   = "./modules/monitoring"
+  ca_cert_pem              = data.local_file.root_ca_cert.content
+  prometheus_namespace     = module.namespaces.prometheus_namespace
+  grafana_namespace        = module.namespaces.grafana_namespace
+  prometheus_helm_version  = var.prometheus_helm_version
+  grafana_helm_version     = var.grafana_helm_version
+  loki_helm_version        = var.loki_helm_version
+  prometheus_helm_values   = local.prometheus_helm_values
+  grafana_helm_values      = local.grafana_helm_values
+  grafana_loki_helm_values = local.grafana_loki_helm_values
+  prometheus_scrape_config = local.prometheus_scrape_config
+  grafana_configmap        = local.grafana_configmap
+  grafana_dashboards       = local.grafana_vault_dashboard
+  grafana_loki_config      = local.grafana_loki_config
+  vault_root_token         = local.decoded_root_token
+}
 
 # module "neo4j" {
 #   source = "./modules/neo4j"
