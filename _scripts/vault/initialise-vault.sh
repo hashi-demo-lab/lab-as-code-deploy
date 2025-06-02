@@ -10,8 +10,29 @@ echo "Detecting Vault pods..."
 NUM_REPLICAS=$(kubectl get pods -n "$K8S_NAMESPACE" -l "app.kubernetes.io/name=vault" -o jsonpath='{.items[*].metadata.name}' | wc -w | tr -d ' ')
 echo "Number of Vault pods detected: $NUM_REPLICAS"
 
+# Wait for Vault pod DNS to resolve
+echo "Waiting for Vault pod DNS to resolve: ${VAULT_RELEASE_NAME}-0.${VAULT_RELEASE_NAME}-internal.${K8S_NAMESPACE}.svc.cluster.local"
+
+RETRIES=30
+for i in $(seq 1 $RETRIES); do
+  if nslookup ${VAULT_RELEASE_NAME}-0.${VAULT_RELEASE_NAME}-internal.${K8S_NAMESPACE}.svc.cluster.local > /dev/null 2>&1; then
+    echo "Vault DNS resolved."
+    break
+  fi
+  echo "DNS not ready yet... ($i/$RETRIES)"
+  sleep 5
+done
+
+# Final check
+if ! nslookup ${VAULT_RELEASE_NAME}-0.${VAULT_RELEASE_NAME}-internal.${K8S_NAMESPACE}.svc.cluster.local > /dev/null 2>&1; then
+  echo "ERROR: Vault DNS never resolved."
+  exit 1
+fi
+
+
 # Use node 0 as the primary Vault instance.
 export VAULT_ADDR=https://${VAULT_RELEASE_NAME}-0.${VAULT_RELEASE_NAME}-internal.${K8S_NAMESPACE}.svc.cluster.local:8200
+
 
 # Check if Vault is already initialized.
 init_status=$(curl --silent --insecure "$VAULT_ADDR/v1/sys/init" | jq -r '.initialized')
