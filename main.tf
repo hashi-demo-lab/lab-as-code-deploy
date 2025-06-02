@@ -85,6 +85,7 @@ module "onepassword_items" {
   vault_lab_name = "Vault Lab"
   primary_vault_root_token = module.primary_vault.root_token
   auto_unseal_vault_root_token = module.auto_unseal_vault.root_token
+  auto_unseal_vault_unseal_key = module.auto_unseal_vault.unseal_key
 }
 
 module "monitoring" {
