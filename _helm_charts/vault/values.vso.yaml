@@ -1,16 +1,40 @@
+# values.yaml
+
+controller:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+
+rbac:
+  clusterRoleAggregation:
+    viewerRoles: ["*"]
+    editorRoles: ["VaultAuth", "HCPAuth"]
+
+kubeRbacProxy:
+  image:
+    pullPolicy: IfNotPresent
+    repository: quay.io/brancz/kube-rbac-proxy
+    tag: v0.18.1
+
+manager:
+  image:
+    pullPolicy: IfNotPresent
+    repository: hashicorp/vault-secrets-operator
+    tag: 0.10.0
+  annotations:
+    reconciler: "true"
+
 defaultVaultConnection:
   enabled: true
   address: "https://vault-active.primary-vault.svc.cluster.local:8200"
   skipTLSVerify: true
-controller:
-  manager:
-    clientCache:
-      persistenceModel: direct-encrypted
-      storageEncryption:
-        enabled: false
-        mount: demo-auth-mount
-        keyName: vso-client-cache
-        transitMount: demo-transit
-        kubernetes:
-          role: webapp
-          serviceAccount: demo-operator
+
+defaultAuthMethod:
+  enabled: true
+  method: kubernetes
+  kubernetes:
+    role: "vault-auth-role"
+    serviceAccount: default
