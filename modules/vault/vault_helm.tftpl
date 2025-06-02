@@ -13,7 +13,7 @@ server:
     secretKey: "license"
   image:
     repository: "hashicorp/vault-enterprise"
-    tag: "latest"
+    tag: "1.19-ent"
     pullPolicy: IfNotPresent
     updateStrategyType: "%{ if vault_mode == "primary" }RollingUpdate%{ else }OnDelete%{ endif }"
   logLevel: "info"
