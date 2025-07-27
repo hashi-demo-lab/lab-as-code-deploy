@@ -106,6 +106,10 @@ module "monitoring" {
   vault_root_token         = local.decoded_root_token
 }
 
+module "cert-manager" {
+  source = "./modules/cert-manager"
+}
+
 # module "neo4j" {
 #   source = "./modules/neo4j"
 
@@ -155,9 +159,7 @@ module "monitoring" {
 #   gitlab_runner_helm_values = local.gitlab_runner_helm_values
 # }
 
-# # module "cert-manager" {
-# #   source = "./modules/cert-manager"
-# # }
+
 
 # module "hostname_service" {
 #   source = "./modules/hostnaming-service"
