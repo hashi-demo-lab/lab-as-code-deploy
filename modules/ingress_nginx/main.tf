@@ -1,22 +1,21 @@
 resource "helm_release" "ingress_nginx" {
   name       = var.helm_release_name
-  repository = var.helm_repository
-  chart      = var.helm_chart_name #"${path.module}/ingress-nginx-4.12.0.tgz" 
-  namespace  = var.ingress_namespace # Set dynamically from input variable
+  chart      = "ingress-nginx/ingress-nginx"
+  namespace  = var.ingress_namespace
+  dependency_update = true
 
   set {
     name  = "controller.extraArgs.enable-ssl-passthrough"
-    value = true
+    value = "true"
   }
-}
 
-resource "kubernetes_secret_v1" "ingress_ca" {
-  metadata {
-    name      = "ingress-ca"
-    namespace = var.ingress_namespace
+  set {
+    name  = "controller.image.repository"
+    value = "registry.k8s.io/ingress-nginx/controller"
   }
-  data = {
-    "ca.crt" = var.ca_cert_pem
+
+  set {
+    name  = "controller.image.tag"
+    value = "v1.12.1"
   }
-  type = "Opaque"
 }
