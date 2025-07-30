@@ -1,53 +1,74 @@
-# Unseal auto-unseal-vault
-export VAULT_ADDR=https://auto-unseal-vault.hashibank.com:443
-vault operator unseal "$(kubectl get secret vault-init-credentials \
-  -n auto-unseal-vault \
-  -o jsonpath='{.data.unseal-key}' | base64 --decode)
+# HashiCorp Vault Lab Commands
+# Useful commands for managing the HashiBank Vault infrastructure
 
-# Restart Primary Vault
-kubectl rollout restart statefulset vault -n primary-vault
+## Authentication & Environment Setup
 
-#unset
+# Clean session (run before switching contexts)
 unset VAULT_TOKEN
 rm -f ~/.vault-token
 
-
-# Log into Primary Vault with Root Token
+# Connect to Primary Vault (external access)
 export VAULT_ADDR=https://vault.hashibank.com:443
-vault login "$(kubectl get secret vault-init-credentials \
-  -n primary-vault \
-  -o jsonpath='{.data.root-token}' | base64 --decode)"
+vault login "$(kubectl get secret vault-init-credentials -n primary-vault -o jsonpath='{.data.root-token}' | base64 --decode)"
 
-# Check Vault Healthh
+## Auto-Unseal Vault Management
+
+# Unseal the auto-unseal vault if needed
+export VAULT_ADDR=https://auto-unseal-vault.hashibank.com:443
+vault operator unseal "$(kubectl get secret vault-init-credentials -n auto-unseal-vault -o jsonpath='{.data.unseal-key}' | base64 --decode)"
+
+## Primary Vault Operations
+
+# Restart Primary Vault cluster
+kubectl rollout restart statefulset vault -n primary-vault
+
+# Check cluster health and status
 vault operator raft list-peers
 vault operator raft autopilot state
 vault read sys/replication/status
 
+## Direct Pod Access (Internal Vault URLs)
 
-
-export VAULT_ADDR=https://vault-0.vault-internal:8200
-
-
-
-kubectl exec -n primary-vault -it vault-2 -- sh
-unset VAULT_TOKEN
-export VAULT_TOKEN=hvs.
-export VAULT_ADDR=https://vault-2.vault-internal:8200
-export TLS_SKIP_VERIFY=true
-vault login -tls-skip-verify $VAULT_TOKEN
-
-
+# Access vault-0 directly
 kubectl exec -n primary-vault -it vault-0 -- sh
-
-export VAULT_TOKEN=hvs.
 export VAULT_ADDR=https://vault-0.vault-internal:8200
-export TLS_SKIP_VERIFY=true
-vault login -tls-skip-verify $VAULT_TOKEN
+export VAULT_TOKEN="<root-token>"
+export VAULT_SKIP_VERIFY=true
 
-
-kubectl exec -n primary-vault  -it vault-1 -- sh
-
-export VAULT_TOKEN=hvs.
+# Access vault-1 directly  
+kubectl exec -n primary-vault -it vault-1 -- sh
 export VAULT_ADDR=https://vault-1.vault-internal:8200
-export TLS_SKIP_VERIFY=true
-vault login -tls-skip-verify $VAULT_TOKEN
+export VAULT_TOKEN="<root-token>"
+export VAULT_SKIP_VERIFY=true
+
+# Access vault-2 directly
+kubectl exec -n primary-vault -it vault-2 -- sh
+export VAULT_ADDR=https://vault-2.vault-internal:8200
+export VAULT_TOKEN="<root-token>"
+export VAULT_SKIP_VERIFY=true
+
+## PKI & ACME Management
+
+# Check PKI engine status
+vault read intermediate-ca/config/urls
+vault read intermediate-ca/config/acme
+
+# List certificates
+vault list intermediate-ca/certs
+
+# View issuer configuration
+vault read intermediate-ca/issuer/default
+
+## Troubleshooting
+
+# Check pod status
+kubectl get pods -n primary-vault
+kubectl get pods -n auto-unseal-vault
+
+# View logs
+kubectl logs -n primary-vault vault-0
+kubectl logs -n primary-vault vault-1
+kubectl logs -n primary-vault vault-2
+
+# Get root token for reference
+kubectl get secret vault-init-credentials -n primary-vault -o jsonpath='{.data.root-token}' | base64 --decode
