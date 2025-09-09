@@ -28,12 +28,15 @@ datasources:
       type: loki
       access: proxy
       orgId: 1
-      url: http://loki.grafana.svc.cluster.local:3100
+      url: http://loki-gateway.grafana.svc.cluster.local:80
       isDefault: false
       jsonData:
         maxLines: 1000
         queryLanguage: "LogQL"
         healthCheckQuery: '{job="vault_audit"}'
+        httpHeaderName1: "X-Scope-OrgID"
+      secureJsonData:
+        httpHeaderValue1: "tenant1"
     - name: prometheus
       type: prometheus
       access: server
