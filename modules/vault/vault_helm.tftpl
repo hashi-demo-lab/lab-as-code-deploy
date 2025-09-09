@@ -13,7 +13,7 @@ server:
     secretKey: "license"
   image:
     repository: "hashicorp/vault-enterprise"
-    tag: "1.19-ent"
+    tag: "latest"
     pullPolicy: IfNotPresent
     updateStrategyType: "%{ if vault_mode == "primary" }RollingUpdate%{ else }OnDelete%{ endif }"
   logLevel: "info"
@@ -57,7 +57,7 @@ server:
             fieldRef:
               fieldPath: metadata.name
       securityContext:
-      runAsUser: 1000
+        runAsUser: 1000
   readinessProbe:
     enabled: true
     path: "/v1/sys/health?standbyok=true&perfstandbyok=true&sealedcode=200&uninitcode=200"
