@@ -65,8 +65,3 @@ variable "grafana_loki_helm_values" {
   description = "Content of Loki Helm values YAML file"
   type        = string
 }
-
-variable "grafana_loki_config" {
-  description = "Content of Grafana ConfigMap for Loki datasource"
-  type        = string
-}
