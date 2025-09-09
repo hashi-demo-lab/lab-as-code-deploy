@@ -26,9 +26,8 @@ locals {
   grafana_vault_dashboard = file("./_helm_charts/grafana/vault_dashboard.grafana.json")
 
   grafana_loki_helm_values = file("./_helm_charts/grafana/values.loki.yaml")
-  grafana_loki_config      = file("./_helm_charts/grafana/loki_datasource.yaml")
 
-  grafana_alloy_configmap = file("./_helm_charts/grafana/grafana_alloy_configmap.yaml")
+  grafana_alloy_configmap = file("./_helm_charts/grafana/alloy_config.yaml")
 
   neo4j_helm_values         = file("./_helm_charts/neo4j/values.neo4j.yaml")
   gitlab_runner_helm_values = file("./_helm_charts/gitlab_runner/values.yaml")
