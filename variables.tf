@@ -97,7 +97,7 @@ variable "grafana_helm_version" {
 variable "loki_helm_version" {
   type        = string
   description = "Loki Helm Release Version"
-  default     = "~> 2"
+  default     = "~> 6"
 }
 
 variable "promtail_helm_version" {
