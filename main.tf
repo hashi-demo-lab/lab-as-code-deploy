@@ -102,7 +102,6 @@ module "monitoring" {
   prometheus_scrape_config = local.prometheus_scrape_config
   grafana_configmap        = local.grafana_configmap
   grafana_dashboards       = local.grafana_vault_dashboard
-  grafana_loki_config      = local.grafana_loki_config
   vault_root_token         = local.decoded_root_token
 }
 
@@ -121,32 +120,32 @@ module "cert-manager" {
 # }
 
 
-# module "ldap_cert" {
-#   source                = "github.com/hashi-demo-lab/terraform-cert-creation.git?ref=main"
-#   ca_private_key_pem    = data.local_file.root_ca_key.content
-#   ca_cert_pem           = data.local_file.root_ca_cert.content
-#   common_name           = var.ldap_common_name
-#   dns_names             = var.ldap_dns_names
-#   organization          = var.organization
-#   is_ca_certificate     = false
-#   validity_period_hours = 8760
-#   cert_file_name        = "${path.root}/../${var.certificates_directory}/ldap.crt"
-#   key_file_name         = "${path.root}/../${var.certificates_directory}/ldap.key"
-#   save_to_file          = true
-# }
+module "ldap_cert" {
+  source                = "github.com/hashi-demo-lab/terraform-cert-creation.git?ref=main"
+  ca_private_key_pem    = data.local_file.root_ca_key.content
+  ca_cert_pem           = data.local_file.root_ca_cert.content
+  common_name           = var.ldap_common_name
+  dns_names             = var.ldap_dns_names
+  organization          = var.organization
+  is_ca_certificate     = false
+  validity_period_hours = 8760
+  cert_file_name        = "${path.root}/../${var.certificates_directory}/ldap.crt"
+  key_file_name         = "${path.root}/../${var.certificates_directory}/ldap.key"
+  save_to_file          = true
+}
 
-# module "ldap" {
-#   source               = "./modules/ldap"
-#   ldap_namespace       = module.namespaces.ldap_namespace
-#   ca_cert_pem          = data.local_file.root_ca_cert.content
-#   ldap_cert_pem        = module.ldap_cert.cert_pem
-#   ldap_private_key_pem = module.ldap_cert.private_key_pem
-#   openldap_statefulset = local.openldap_statefulset
-#   openldap_service     = local.openldap_service
-#   phpldapadmin_service = local.phpldapadmin_service
-#   openldap_ingress     = local.openldap_ingress
-#   ldap_ldif_data       = local.ldap_ldif_data
-# }
+module "ldap" {
+  source               = "./modules/ldap"
+  ldap_namespace       = module.namespaces.ldap_namespace
+  ca_cert_pem          = data.local_file.root_ca_cert.content
+  ldap_cert_pem        = module.ldap_cert.cert_pem
+  ldap_private_key_pem = module.ldap_cert.private_key_pem
+  openldap_statefulset = local.openldap_statefulset
+  openldap_service     = local.openldap_service
+  phpldapadmin_service = local.phpldapadmin_service
+  openldap_ingress     = local.openldap_ingress
+  ldap_ldif_data       = local.ldap_ldif_data
+}
 
 # module "gitlab_runner" {
 #   source = "./modules/gitlab_runner"
