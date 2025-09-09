@@ -2,11 +2,19 @@
   type: loki
   access: proxy
   orgId: 1
-  url: http://loki.grafana.svc.cluster.local:3100
+  url: http://loki-gateway.grafana.svc.cluster.local:80
   isDefault: false
+  version: 1
+  editable: true
   jsonData:
     maxLines: 1000
-    queryLanguage: "LogQL"
+    httpMethod: "GET"
+    timeout: "30"
+    manageAlerts: true
+    alertmanagerUid: ""
+    httpHeaderName1: "X-Scope-OrgID"
+  secureJsonData:
+    httpHeaderValue1: "tenant1"
 - name: prometheus
   type: prometheus
   access: server
