@@ -70,7 +70,7 @@ else
     vault audit enable file file_path=/vault/audit/vault_audit.log log_raw=true
   fi
 fi
-chmod g+r /vault/audit/vault_audit.log
+chmod 644 /vault/audit/vault_audit.log
 
 # For additional nodes, join the Raft cluster.
 if [ "$NUM_REPLICAS" -gt 1 ]; then
