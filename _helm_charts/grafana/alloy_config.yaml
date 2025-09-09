@@ -1,0 +1,21 @@
+logging {
+  level = "info"
+  format = "logfmt"
+}
+
+loki.source.file "vault_audit" {
+  targets = [
+    { __path__ = "/vault/audit/vault_audit.log", "job" = "vault_audit", "cluster" = sys.env("CLUSTER_TYPE"), "pod" = sys.env("POD_NAME") },
+  ]
+  forward_to = [loki.write.default.receiver]
+  
+  // Enhanced file monitoring settings  
+  tail_from_end = false     // Start from beginning of file when discovered
+}
+
+loki.write "default" {
+  endpoint {
+    url = "http://loki-gateway.grafana.svc.cluster.local/loki/api/v1/push"
+    tenant_id = "tenant1"
+  }
+}
