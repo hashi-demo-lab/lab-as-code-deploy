@@ -124,17 +124,6 @@ resource "helm_release" "grafana" {
   }
 }
 
-resource "kubernetes_config_map_v1" "grafana_loki_datasource" {
-  metadata {
-    name      = "grafana-loki-datasource"
-    namespace = var.grafana_namespace
-  }
-
-  data = {
-    "datasources.yaml" = var.grafana_loki_config
-  }
-}
-
 resource "helm_release" "loki" {
   name       = "loki"
   repository = "https://grafana.github.io/helm-charts"
