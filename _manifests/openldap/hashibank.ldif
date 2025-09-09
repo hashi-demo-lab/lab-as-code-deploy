@@ -2,7 +2,37 @@ dn: ou=service-accounts,dc=hashibank,dc=com
 objectClass: organizationalUnit
 objectClass: top
 ou: service-accounts
-description: Service accounts
+description: Parent OU for all service accounts
+
+dn: ou=production,ou=service-accounts,dc=hashibank,dc=com
+objectClass: organizationalUnit
+objectClass: top
+ou: production
+description: Production service accounts
+
+dn: ou=development,ou=service-accounts,dc=hashibank,dc=com
+objectClass: organizationalUnit
+objectClass: top
+ou: development
+description: Development service accounts
+
+dn: ou=library-accounts,dc=hashibank,dc=com
+objectClass: organizationalUnit
+objectClass: top
+ou: library-accounts
+description: Parent OU for library service accounts
+
+dn: ou=production,ou=library-accounts,dc=hashibank,dc=com
+objectClass: organizationalUnit
+objectClass: top
+ou: production
+description: Production library service accounts
+
+dn: ou=development,ou=library-accounts,dc=hashibank,dc=com
+objectClass: organizationalUnit
+objectClass: top
+ou: development
+description: Development library service accounts
 
 dn: ou=groups,dc=hashibank,dc=com
 objectClass: organizationalUnit
@@ -51,9 +81,24 @@ objectClass: groupOfNames
 objectClass: top
 description: group for service accounts
 cn: service-accounts
-member: cn=svc-account1,ou=service-accounts,dc=hashibank,dc=com
-member: cn=svc-account2,ou=service-accounts,dc=hashibank,dc=com
-member: cn=svc-account3,ou=service-accounts,dc=hashibank,dc=com
+member: cn=svc-account1,ou=production,ou=service-accounts,dc=hashibank,dc=com
+member: cn=svc-account2,ou=production,ou=service-accounts,dc=hashibank,dc=com
+member: cn=svc-account3,ou=production,ou=service-accounts,dc=hashibank,dc=com
+member: cn=svc-account4,ou=development,ou=service-accounts,dc=hashibank,dc=com
+member: cn=svc-account5,ou=development,ou=service-accounts,dc=hashibank,dc=com
+member: cn=svc-account6,ou=development,ou=service-accounts,dc=hashibank,dc=com
+
+dn: cn=library-accounts,ou=groups,dc=hashibank,dc=com
+objectClass: groupOfNames
+objectClass: top
+description: group for library service accounts
+cn: library-accounts
+member: cn=lib-svc-account1,ou=production,ou=library-accounts,dc=hashibank,dc=com
+member: cn=lib-svc-account2,ou=production,ou=library-accounts,dc=hashibank,dc=com
+member: cn=lib-svc-account3,ou=production,ou=library-accounts,dc=hashibank,dc=com
+member: cn=lib-svc-account4,ou=development,ou=library-accounts,dc=hashibank,dc=com
+member: cn=lib-svc-account5,ou=development,ou=library-accounts,dc=hashibank,dc=com
+member: cn=lib-svc-account6,ou=development,ou=library-accounts,dc=hashibank,dc=com
 
 dn: cn=aaron,ou=users,dc=hashibank,dc=com
 objectClass: person
@@ -79,23 +124,90 @@ sn: l
 memberOf: cn=administrators,ou=groups,dc=hashibank,dc=com
 userPassword: password
 
-dn: cn=svc-account1,ou=service-accounts,dc=hashibank,dc=com
+# Production Service Accounts (for Static Credential Management)
+dn: cn=svc-account1,ou=production,ou=service-accounts,dc=hashibank,dc=com
 objectClass: inetOrgPerson
 objectClass: top
 cn: svc-account1
-sn: Service Account 1
+sn: Production Service Account 1
 userPassword: password
 
-dn: cn=svc-account2,ou=service-accounts,dc=hashibank,dc=com
+dn: cn=svc-account2,ou=production,ou=service-accounts,dc=hashibank,dc=com
 objectClass: inetOrgPerson
 objectClass: top
 cn: svc-account2
-sn: Service Account 2
+sn: Production Service Account 2
 userPassword: password
 
-dn: cn=svc-account3,ou=service-accounts,dc=hashibank,dc=com
+dn: cn=svc-account3,ou=production,ou=service-accounts,dc=hashibank,dc=com
 objectClass: inetOrgPerson
 objectClass: top
 cn: svc-account3
-sn: Service Account 3
+sn: Production Service Account 3
+userPassword: password
+
+# Development Service Accounts (for Static Credential Management)
+dn: cn=svc-account4,ou=development,ou=service-accounts,dc=hashibank,dc=com
+objectClass: inetOrgPerson
+objectClass: top
+cn: svc-account4
+sn: Development Service Account 4
+userPassword: password
+
+dn: cn=svc-account5,ou=development,ou=service-accounts,dc=hashibank,dc=com
+objectClass: inetOrgPerson
+objectClass: top
+cn: svc-account5
+sn: Development Service Account 5
+userPassword: password
+
+dn: cn=svc-account6,ou=development,ou=service-accounts,dc=hashibank,dc=com
+objectClass: inetOrgPerson
+objectClass: top
+cn: svc-account6
+sn: Development Service Account 6
+userPassword: password
+
+# Production Library Accounts (for Check-out/Check-in)
+dn: cn=lib-svc-account1,ou=production,ou=library-accounts,dc=hashibank,dc=com
+objectClass: inetOrgPerson
+objectClass: top
+cn: lib-svc-account1
+sn: Production Library Service Account 1
+userPassword: password
+
+dn: cn=lib-svc-account2,ou=production,ou=library-accounts,dc=hashibank,dc=com
+objectClass: inetOrgPerson
+objectClass: top
+cn: lib-svc-account2
+sn: Production Library Service Account 2
+userPassword: password
+
+dn: cn=lib-svc-account3,ou=production,ou=library-accounts,dc=hashibank,dc=com
+objectClass: inetOrgPerson
+objectClass: top
+cn: lib-svc-account3
+sn: Production Library Service Account 3
+userPassword: password
+
+# Development Library Accounts (for Check-out/Check-in)
+dn: cn=lib-svc-account4,ou=development,ou=library-accounts,dc=hashibank,dc=com
+objectClass: inetOrgPerson
+objectClass: top
+cn: lib-svc-account4
+sn: Development Library Service Account 4
+userPassword: password
+
+dn: cn=lib-svc-account5,ou=development,ou=library-accounts,dc=hashibank,dc=com
+objectClass: inetOrgPerson
+objectClass: top
+cn: lib-svc-account5
+sn: Development Library Service Account 5
+userPassword: password
+
+dn: cn=lib-svc-account6,ou=development,ou=library-accounts,dc=hashibank,dc=com
+objectClass: inetOrgPerson
+objectClass: top
+cn: lib-svc-account6
+sn: Development Library Service Account 6
 userPassword: password
